@@ -1,4 +1,4 @@
-# Guida allo studente
+﻿# Guida allo studente
 
 ## Indice
 - Pipeline di progetto
@@ -69,6 +69,8 @@ Su invito esplicito del docente, dopo aver effettuato l’iscrizione e il login 
 - Nelle sezioni *General* e *Auto Cancellation* selezionare le opzioni come da figura che seguente
 
 ![](res/img/guida-studente/Schermata3.png)
+
+![](res/img/guida-studente/autocancellation.png)
 
 - Nella sezione *Environment Variables*, tramite il tasto *Add*, definire le seguenti 4 Variabili d’ambiente:
 
