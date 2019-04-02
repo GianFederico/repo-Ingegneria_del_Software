@@ -2,7 +2,7 @@ env:
   global:
     - CI_NAME:travis-pro
     - COVERALLS_REPO_TOKEN=HYQu36wLRAQ95YhnNimDC9GytAfg8CtPP
-
+ 
 sudo: required
 
 language: java
