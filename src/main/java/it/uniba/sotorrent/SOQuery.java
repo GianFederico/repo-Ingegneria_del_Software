@@ -30,7 +30,7 @@ public final class SOQuery implements ISOQuery {
 	/**
 	 * URL of credentials JSON file.
 	 */
-	private static final String url = "http://neo.di.uniba.it/credentials/project-sna4so.json";
+	private static final String url = "http://neo.di.uniba.it/credentials/project-hopcroft-asdwt2.json";
 
 	/**
 	 * Default constructor, instantiates BigQuery API service.
