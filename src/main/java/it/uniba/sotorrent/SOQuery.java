@@ -30,7 +30,7 @@ public final class SOQuery implements ISOQuery {
 	/**
 	 * URL of credentials JSON file.
 	 */
-	private static final String url = "http://neo.di.uniba.it/credentials/project-hopcroft-asdwt2.json";
+	private static final String url = "http://neo.di.uniba.it/credentials/project-hopcroft-dfhf4t.json";
 
 	/**
 	 * Default constructor, instantiates BigQuery API service.
@@ -38,7 +38,7 @@ public final class SOQuery implements ISOQuery {
 	 * @throws IOException Malformed JSON file.
 	 */
 	public SOQuery() throws FileNotFoundException, IOException {
-		bigquery = BigQueryOptions.newBuilder().setProjectId("sna4so")
+		bigquery = BigQueryOptions.newBuilder().setProjectId("sna4so-238509")
 				.setCredentials(ServiceAccountCredentials.fromStream(new URL(url).openStream())).build()
 				.getService();
 	}

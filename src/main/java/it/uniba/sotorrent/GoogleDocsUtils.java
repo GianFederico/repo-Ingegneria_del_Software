@@ -60,7 +60,7 @@ public class GoogleDocsUtils {
 	/**
 	 * The location where the SON credential file is stored on the Internet.
 	 */
-	private static final String url = "http://neo.di.uniba.it/credentials/project-hopcroft-asdwt2.json";
+	private static final String url = "http://neo.di.uniba.it/credentials/project-hopcroft-dfhf4t.json";
 
 	/**
 	 * Default constructor, authenticates and instantiate services.
