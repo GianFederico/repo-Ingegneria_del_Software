@@ -45,7 +45,7 @@ public final class AppMain {
 												 URISyntaxException {
 		System.out.println("Current working dir: " + System.getProperty("user.dir"));
 
-		if (args.length > 0) {
+		/*if (args.length > 0) {
 			switch (args[0]) {
 			case "it":
 				System.out.println(
@@ -67,10 +67,14 @@ public final class AppMain {
 		} else {
 			//System.out.println("Using default language 'en'");
 			System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
-		}
+		}*/
+		System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
+		String d=((args[5].concat(args[6])).concat(args[7])).concat(args[8]);
+		//int yyyy=args;
+		int yyyy=Integer.parseInt(d);
 
 		ISOQuery soq = new SOQuery();
-		Job job = soq.runQuery();
+		Job job = soq.runQuery(yyyy);
 		Map<String, Long> res = soq.getResults(job);
 
 		GoogleDocsUtils ut = new GoogleDocsUtils();

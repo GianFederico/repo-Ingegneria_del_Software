@@ -92,15 +92,14 @@ public final class SOQuery implements ISOQuery {
 		return results;
 	}*/
 	@Override
-	public Job runQuery() throws InterruptedException {
+	public Job runQuery(int yyyy) throws InterruptedException {
 		// Use standard SQL syntax for queries.
 		// See: https://cloud.google.com/bigquery/sql-reference/
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder("SELECT "
 						+ "DISTINCT owner_user_id as User  "
 						+ "FROM `bigquery-public-data.stackoverflow.posts_questions`"
 						+ "WHERE owner_user_id IS NOT null "
-						+ "AND post_type_id=1 AND extract(year from creation_date)=2016  "
-						+ "AND extract(month from creation_date)=02  "
+						+ "AND post_type_id=1 AND extract(year from creation_date)='" +yyyy+ "'AND extract(month from creation_date)=02 "
 						+ "AND extract(day from creation_date)=11 "
 						+ "ORDER BY owner_user_id ASC "
 						+ "LIMIT 100")
