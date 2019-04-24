@@ -43,7 +43,7 @@ public final class SOQuery implements ISOQuery {
 				.getService();
 	}
 
-	@Override
+	/*@Override
 	public Job runQuery() throws InterruptedException {
 		// Use standard SQL syntax for queries.
 		// See: https://cloud.google.com/bigquery/sql-reference/
@@ -72,9 +72,9 @@ public final class SOQuery implements ISOQuery {
 			throw new RuntimeException(queryJob.getStatus().getError().toString());
 		}
 		return queryJob;
-	}
+	}*/
 
-
+	/*
 	@Override
 	public Map<String, Long> getResults(final Job queryJob) throws JobException, InterruptedException {
 		Map<String, Long> results = new HashMap<String, Long>();
@@ -90,6 +90,57 @@ public final class SOQuery implements ISOQuery {
 			}
 		}
 		return results;
-	}
+	}*/
+	@Override
+	public Job runQuery() throws InterruptedException {
+		// Use standard SQL syntax for queries.
+		// See: https://cloud.google.com/bigquery/sql-reference/
+		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder("SELECT "
+						+ "DISTINCT owner_user_id as User  "
+						+ "FROM `bigquery-public-data.stackoverflow.posts_questions`"
+						+ "WHERE owner_user_id IS NOT null "
+						+ "AND post_type_id=1 AND extract(year from creation_date)=2016  "
+						+ "AND extract(month from creation_date)=02  "
+						+ "AND extract(day from creation_date)=11 "
+						+ "ORDER BY owner_user_id ASC "
+						+ "LIMIT 100")
+				.setUseLegacySql(false).build();
 
+		// Create a job ID so that we can safely retry.
+		JobId jobId = JobId.of(UUID.randomUUID().toString());
+		Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build());
+
+		// Wait for the query to complete.
+		queryJob = queryJob.waitFor();
+
+		// Check for errors
+		if (queryJob == null) {
+			throw new RuntimeException("Job no longer exists");
+		} else if (queryJob.getStatus().getError() != null) {
+			// You can also look at queryJob.getStatus().getExecutionErrors() for all
+			// errors, not just the latest one.
+			throw new RuntimeException(queryJob.getStatus().getError().toString());
+		}
+		return queryJob;
+	}
+	
+	@Override
+	public Map<String, Long> getResults(final Job queryJob) throws JobException, InterruptedException {
+		Map<String, Long> results = new HashMap<String, Long>();
+
+		if (queryJob != null) {
+			TableResult result = queryJob.getQueryResults();
+			int i=0;
+			// Print all pages of the results.
+			for (FieldValueList row : result.iterateAll()) {
+				i++;
+				String d=Integer.toString(i);
+				long UserID = row.get("User").getLongValue();
+				System.out.printf("#: %s User: %d%n", d, UserID);
+				results.put(d, UserID);
+			}
+		}
+		return results;
+
+}
 }

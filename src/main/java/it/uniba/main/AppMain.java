@@ -65,9 +65,8 @@ public final class AppMain {
 
 			}
 		} else {
-			System.out.println("Using default language 'en'");
-			System.out.println("Select the 10 most favorited Stack Overflow posts "
-							   + "on 'google-bigquery'");
+			//System.out.println("Using default language 'en'");
+			System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
 		}
 
 		ISOQuery soq = new SOQuery();

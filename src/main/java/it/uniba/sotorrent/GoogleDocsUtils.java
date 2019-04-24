@@ -151,8 +151,8 @@ public class GoogleDocsUtils {
 		List<Request> requests = new ArrayList<>();
 		List<CellData> values = new ArrayList<>();
 
-		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("URL")));
-		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("Views")));
+		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("#")));
+		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("User ID")));
 		requests.add(new Request().setUpdateCells(
 				new UpdateCellsRequest().setStart(new GridCoordinate().setSheetId(0).setRowIndex(0)
 						.setColumnIndex(0))
@@ -170,13 +170,13 @@ public class GoogleDocsUtils {
 				requests = new ArrayList<>();
 				values = new ArrayList<>();
 
-				String keyUrl = entry.getKey();
+				String key = entry.getKey();
 				values.add(new CellData()
-						.setUserEnteredValue(new ExtendedValue().setStringValue(keyUrl)));
-				Long views = entry.getValue();
+						.setUserEnteredValue(new ExtendedValue().setStringValue(key)));
+				Long UserID = entry.getValue();
 				values.add(
 						new CellData().setUserEnteredValue(new ExtendedValue()
-								.setStringValue(String.valueOf(views))));
+								.setStringValue(String.valueOf(UserID))));
 				requests.add(new Request().setUpdateCells(new UpdateCellsRequest()
 						.setStart(new GridCoordinate().setSheetId(0).setRowIndex(rowIndex)
 								.setColumnIndex(0))
