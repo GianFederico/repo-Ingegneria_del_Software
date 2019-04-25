@@ -71,9 +71,11 @@ public final class AppMain {
 		}*/
 		System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
 		String yyyy=args[0].substring(args[0].length() - 4 );
+		String mm=args[1].substring(args[1].length() - 2 );
+		String dd=args[2].substring(args[2].length() - 2 );
 
 		ISOQuery soq = new SOQuery();
-		Job job = soq.runQuery(yyyy);
+		Job job = soq.runQuery(yyyy, mm, dd);
 		Map<String, Long> res = soq.getResults(job);
 
 		GoogleDocsUtils ut = new GoogleDocsUtils();
