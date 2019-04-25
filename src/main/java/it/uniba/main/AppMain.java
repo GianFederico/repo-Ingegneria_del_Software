@@ -70,16 +70,19 @@ public final class AppMain {
 			System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
 		}*/
 		System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
-		String yyyy=args[0].substring(args[0].length() - 4 );
+		String yyyy=Integer.toString(Integer.parseInt(args[0]));
+		String mm=Integer.toString(Integer.parseInt(args[1]));
+		String dd=Integer.toString(Integer.parseInt(args[2]));
+		/*String yyyy=args[0].substring(args[0].length() - 4 );
 		String mm=args[1].substring(args[1].length() - 2 );
-		String dd=args[2].substring(args[2].length() - 2 );
+		String dd=args[2].substring(args[2].length() - 2 );*/
 		String type="1";
 		if (args[3].length()<13) { 
 			if (args[3].length()==11||args[3].length()==12) {
 			type="2";
 			} else {type="post";}
 		}
-		String limit=args[4];
+		String limit=Integer.toString(Integer.parseInt(args[4]));
 
 		ISOQuery soq = new SOQuery();
 		Job job = soq.runQuery(yyyy, mm, dd, type, limit);
