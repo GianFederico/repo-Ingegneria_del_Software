@@ -16,7 +16,7 @@ public interface ISOQuery {
 	 * @return The job for the query.
 	 * @throws InterruptedException Raised on timeouts.
 	 */
-	Job runQuery(int yyyy) throws InterruptedException;
+	Job runQuery(String yyyy) throws InterruptedException;
 
 	/**
 	 * Returns the results from the query job.

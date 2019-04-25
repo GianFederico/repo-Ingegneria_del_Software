@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.Map;
 
 import com.google.cloud.bigquery.Job;
@@ -69,9 +70,7 @@ public final class AppMain {
 			System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
 		}*/
 		System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
-		String d=((args[5].concat(args[6])).concat(args[7])).concat(args[8]);
-		//int yyyy=args;
-		int yyyy=Integer.parseInt(d);
+		String yyyy=args[0].substring(args[0].length() - 4 );
 
 		ISOQuery soq = new SOQuery();
 		Job job = soq.runQuery(yyyy);
