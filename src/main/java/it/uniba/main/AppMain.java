@@ -73,10 +73,17 @@ public final class AppMain {
 		String yyyy=args[0].substring(args[0].length() - 4 );
 		String mm=args[1].substring(args[1].length() - 2 );
 		String dd=args[2].substring(args[2].length() - 2 );
+		String type="1";
+		if (args[3].length()<13) { 
+			if (args[3].length()==11||args[3].length()==12) {
+			type="2";
+			} else {type="post";}
+		}
+		String limit=args[4];
 
 		ISOQuery soq = new SOQuery();
-		Job job = soq.runQuery(yyyy, mm, dd);
-		Map<String, Long> res = soq.getResults(job);
+		Job job = soq.runQuery(yyyy, mm, dd, type, limit);
+		Map<String, String> res = soq.getResults(job);
 
 		GoogleDocsUtils ut = new GoogleDocsUtils();
 		String spid = ut.createSheet("Prova sna4so");

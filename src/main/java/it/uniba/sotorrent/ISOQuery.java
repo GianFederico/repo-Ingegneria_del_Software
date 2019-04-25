@@ -16,7 +16,7 @@ public interface ISOQuery {
 	 * @return The job for the query.
 	 * @throws InterruptedException Raised on timeouts.
 	 */
-	Job runQuery(String yyyy, String mm, String dd) throws InterruptedException;
+	Job runQuery(String yyyy, String mm, String dd, String type, String limit) throws InterruptedException;
 
 	/**
 	 * Returns the results from the query job.
@@ -25,6 +25,6 @@ public interface ISOQuery {
 	 * @throws JobException Generic error occurred.
 	 * @throws InterruptedException Raised on timeouts.
 	 */
-	Map<String, Long> getResults(Job job) throws JobException, InterruptedException;
+	Map<String, String> getResults(Job job) throws JobException, InterruptedException;
 
 }

@@ -147,11 +147,11 @@ public class GoogleDocsUtils {
 	 * @param res The hash map of the results, with URL as key and view count as value.
 	 * @throws IOException Generic I/O error.
 	 */
-	public void writeSheet(final String spid, final Map<String, Long> res) throws IOException {
+	public void writeSheet(final String spid, final Map<String, String> res) throws IOException {
 		List<Request> requests = new ArrayList<>();
 		List<CellData> values = new ArrayList<>();
 
-		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("#")));
+		//values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("#")));
 		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("User ID")));
 		requests.add(new Request().setUpdateCells(
 				new UpdateCellsRequest().setStart(new GridCoordinate().setSheetId(0).setRowIndex(0)
@@ -166,14 +166,14 @@ public class GoogleDocsUtils {
 
 		if (null != res) {
 			int rowIndex = 1;
-			for (Map.Entry<String, Long> entry : res.entrySet()) {
+			for (Map.Entry<String, String> entry : res.entrySet()) {
 				requests = new ArrayList<>();
 				values = new ArrayList<>();
 
-				String key = entry.getKey();
-				values.add(new CellData()
-						.setUserEnteredValue(new ExtendedValue().setStringValue(key)));
-				Long UserID = entry.getValue();
+				//String key = entry.getKey();
+				//values.add(new CellData()
+				//		.setUserEnteredValue(new ExtendedValue().setStringValue(key)));
+				String UserID = entry.getValue();
 				values.add(
 						new CellData().setUserEnteredValue(new ExtendedValue()
 								.setStringValue(String.valueOf(UserID))));
