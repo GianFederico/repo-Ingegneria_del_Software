@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.Map;
 
 import com.google.cloud.bigquery.Job;
@@ -46,33 +47,52 @@ public final class AppMain {
 		System.out.println("Current working dir: " + System.getProperty("user.dir"));
 
 		if (args.length > 0) {
-			switch (args[0]) {
-			case "it":
-				System.out.println(
-						"Seleziona i 10 post piu' 'favoriti' su Stack Overflow "
-						+ "sull'argomento 'google-bigquery'");
+			switch (args[3]) {
+			case "type=question":
+				System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
 				break;
 
-			case "en":
-				System.out.println("Select the 10 most favorited Stack Overflow posts "
-								   + "on 'google-bigquery'");
+			case "type=answer":
+				System.out.println("");
 				break;
-
-			default:
-				System.out.println("Specify the language. "
-								   + "Languages supported: 'it' or 'en'");
+				
+			case "type=post":
+				System.out.println("");
 				break;
-
+				
+			case "taglike=java":
+				switch (args[2]) {
+				case "type=question":
+					System.out.println("");
+					break;
+				
+				case "type=answer":
+					System.out.println("");
+					break;
+					
+				case "type=post":
+					System.out.println("");
+					break;
+				}
 			}
-		} else {
-			System.out.println("Using default language 'en'");
-			System.out.println("Select the 10 most favorited Stack Overflow posts "
-							   + "on 'google-bigquery'");
+		} else {System.out.println("Inserire dati in formato yyyy=____ mm=__ dd=__ type=________ limit=___ %n oppure yyyy=____ mm=__ type=________ taglike=____ limit=___");
+				System.exit(0);
+			}
+		String yyyy=args[0].substring(args[0].length() - (args[0].length()-5));
+		String mm=args[1].substring(args[1].length() - (args[1].length()-3));
+		String dd=args[2].substring(args[2].length() - (args[2].length()-3) );
+		String type="1";
+		if (args[3].length()<13) { 
+			if (args[3].length()==11||args[3].length()==12) {
+			type="2";
+			} else {type="post";}
 		}
+		String limit=args[4].substring(args[4].length() - (args[4].length()-6));
 
 		ISOQuery soq = new SOQuery();
-		Job job = soq.runQuery();
-		Map<String, Long> res = soq.getResults(job);
+		Job job = soq.runQuery(yyyy, mm, dd, type, limit);
+		Map<String, Double> res = soq.getResults(job);
+		
 
 		GoogleDocsUtils ut = new GoogleDocsUtils();
 		String spid = ut.createSheet("Prova sna4so");

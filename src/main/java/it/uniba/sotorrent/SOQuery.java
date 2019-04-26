@@ -43,17 +43,21 @@ public final class SOQuery implements ISOQuery {
 				.getService();
 	}
 
+	
 	@Override
-	public Job runQuery() throws InterruptedException {
+	public Job runQuery(String yyyy, String mm, String dd, String type, String limit) throws InterruptedException {
 		// Use standard SQL syntax for queries.
 		// See: https://cloud.google.com/bigquery/sql-reference/
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder("SELECT "
-						+ "CONCAT('https://stackoverflow.com/questions/', "
-						+ "CAST(id as STRING)) as url, "
-						+ "view_count "
-						+ "FROM `bigquery-public-data.stackoverflow.posts_questions` "
-						+ "WHERE tags like '%google-bigquery%' "
-						+ "ORDER BY favorite_count DESC LIMIT 10")
+						+ "DISTINCT owner_user_id as User "
+						+ "FROM `bigquery-public-data.stackoverflow.posts_questions`"
+						+ "WHERE owner_user_id IS NOT null "
+						+ "AND post_type_id=" +type
+						+ " AND extract(year from creation_date)=" +yyyy
+						+ " AND extract(month from creation_date)=" +mm
+						+ " AND extract(day from creation_date)=" +dd
+						+ " ORDER BY User "
+						+ "LIMIT " +limit)
 				.setUseLegacySql(false).build();
 
 		// Create a job ID so that we can safely retry.
@@ -73,23 +77,26 @@ public final class SOQuery implements ISOQuery {
 		}
 		return queryJob;
 	}
-
-
+	
 	@Override
-	public Map<String, Long> getResults(final Job queryJob) throws JobException, InterruptedException {
-		Map<String, Long> results = new HashMap<String, Long>();
+	public Map<String, Double> getResults(final Job queryJob) throws JobException, InterruptedException {
+		Map<String, Double> results = new HashMap<String, Double>();
 
 		if (queryJob != null) {
 			TableResult result = queryJob.getQueryResults();
+			int i=0;
 			// Print all pages of the results.
 			for (FieldValueList row : result.iterateAll()) {
-				String keyUrl = row.get("url").getStringValue();
-				long viewCount = row.get("view_count").getLongValue();
-				System.out.printf("url: %s views: %d%n", keyUrl, viewCount);
-				results.put(keyUrl, viewCount);
+				i++;
+				String d=Integer.toString(i);
+				
+				//String UserID=row.get("User").getStringValue();
+				Double UserID = row.get("User").getDoubleValue();
+				System.out.printf("#: %s User: %.0f%n", d, UserID);
+				results.put(d, UserID);
 			}
 		}
 		return results;
-	}
 
+}
 }
