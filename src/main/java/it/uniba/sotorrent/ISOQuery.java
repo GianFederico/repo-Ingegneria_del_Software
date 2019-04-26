@@ -21,10 +21,10 @@ public interface ISOQuery {
 	/**
 	 * Returns the results from the query job.
 	 * @param job The job associated to the query.
-	 * @return Results as a hash map, with URL as key and view count as value.
+	 * @return Results as a hash map //, with URL as key and view count as value.
 	 * @throws JobException Generic error occurred.
 	 * @throws InterruptedException Raised on timeouts.
 	 */
-	Map<String, String> getResults(Job job) throws JobException, InterruptedException;
+	Map<String, Double> getResults(Job job) throws JobException, InterruptedException;
 
 }

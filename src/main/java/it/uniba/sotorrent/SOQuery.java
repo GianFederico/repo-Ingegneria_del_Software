@@ -43,54 +43,7 @@ public final class SOQuery implements ISOQuery {
 				.getService();
 	}
 
-	/*@Override
-	public Job runQuery() throws InterruptedException {
-		// Use standard SQL syntax for queries.
-		// See: https://cloud.google.com/bigquery/sql-reference/
-		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder("SELECT "
-						+ "CONCAT('https://stackoverflow.com/questions/', "
-						+ "CAST(id as STRING)) as url, "
-						+ "view_count "
-						+ "FROM `bigquery-public-data.stackoverflow.posts_questions` "
-						+ "WHERE tags like '%google-bigquery%' "
-						+ "ORDER BY favorite_count DESC LIMIT 10")
-				.setUseLegacySql(false).build();
-
-		// Create a job ID so that we can safely retry.
-		JobId jobId = JobId.of(UUID.randomUUID().toString());
-		Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build());
-
-		// Wait for the query to complete.
-		queryJob = queryJob.waitFor();
-
-		// Check for errors
-		if (queryJob == null) {
-			throw new RuntimeException("Job no longer exists");
-		} else if (queryJob.getStatus().getError() != null) {
-			// You can also look at queryJob.getStatus().getExecutionErrors() for all
-			// errors, not just the latest one.
-			throw new RuntimeException(queryJob.getStatus().getError().toString());
-		}
-		return queryJob;
-	}*/
-
-	/*
-	@Override
-	public Map<String, Long> getResults(final Job queryJob) throws JobException, InterruptedException {
-		Map<String, Long> results = new HashMap<String, Long>();
-
-		if (queryJob != null) {
-			TableResult result = queryJob.getQueryResults();
-			// Print all pages of the results.
-			for (FieldValueList row : result.iterateAll()) {
-				String keyUrl = row.get("url").getStringValue();
-				long viewCount = row.get("view_count").getLongValue();
-				System.out.printf("url: %s views: %d%n", keyUrl, viewCount);
-				results.put(keyUrl, viewCount);
-			}
-		}
-		return results;
-	}*/
+	
 	@Override
 	public Job runQuery(String yyyy, String mm, String dd, String type, String limit) throws InterruptedException {
 		// Use standard SQL syntax for queries.
@@ -103,8 +56,8 @@ public final class SOQuery implements ISOQuery {
 						+ " AND extract(year from creation_date)=" +yyyy
 						+ " AND extract(month from creation_date)=" +mm
 						+ " AND extract(day from creation_date)=" +dd
-						+ " ORDER BY owner_user_id ASC "
-						+ "LIMIT" +limit)
+						+ " ORDER BY User "
+						+ "LIMIT " +limit)
 				.setUseLegacySql(false).build();
 
 		// Create a job ID so that we can safely retry.
@@ -126,8 +79,8 @@ public final class SOQuery implements ISOQuery {
 	}
 	
 	@Override
-	public Map<String, String> getResults(final Job queryJob) throws JobException, InterruptedException {
-		Map<String, String> results = new HashMap<String, String>();
+	public Map<String, Double> getResults(final Job queryJob) throws JobException, InterruptedException {
+		Map<String, Double> results = new HashMap<String, Double>();
 
 		if (queryJob != null) {
 			TableResult result = queryJob.getQueryResults();
@@ -136,9 +89,10 @@ public final class SOQuery implements ISOQuery {
 			for (FieldValueList row : result.iterateAll()) {
 				i++;
 				String d=Integer.toString(i);
-				String UserID=row.get("User").getStringValue();
-				//Long UserID = row.get("User").getLongValue();
-				System.out.printf("#: %s User: %d%n", d, UserID);
+				
+				//String UserID=row.get("User").getStringValue();
+				Double UserID = row.get("User").getDoubleValue();
+				System.out.printf("#: %s User: %.0f%n", d, UserID);
 				results.put(d, UserID);
 			}
 		}
