@@ -45,15 +45,18 @@ public final class AppMain {
 												 GeneralSecurityException,
 												 URISyntaxException {
 		System.out.println("Current working dir: " + System.getProperty("user.dir"));
+		String typedb="";
 
 		if (args.length > 0) {
 			switch (args[3]) {
 			case "type=question":
 				System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
+				typedb="questions";
 				break;
 
 			case "type=answer":
 				System.out.println("");
+				typedb="answers";
 				break;
 				
 			case "type=post":
@@ -90,7 +93,7 @@ public final class AppMain {
 		String limit=args[4].substring(args[4].length() - (args[4].length()-6));
 
 		ISOQuery soq = new SOQuery();
-		Job job = soq.runQuery(yyyy, mm, dd, type, limit);
+		Job job = soq.runQuery(yyyy, mm, dd, type, typedb, limit);
 		Map<String, Double> res = soq.getResults(job);
 		
 
