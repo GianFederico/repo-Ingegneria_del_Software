@@ -59,7 +59,7 @@ public final class SOQuery implements ISOQuery {
 					+ " AND extract(day from creation_date)=" +dd
 					+ " ORDER BY User)"
 					
-			        + "UNION DISTINCT"
+			        + " UNION DISTINCT"
 			        
 					+ "(SELECT DISTINCT owner_user_id as User "
 			        + "FROM `bigquery-public-data.stackoverflow.posts_answers`"
@@ -69,7 +69,7 @@ public final class SOQuery implements ISOQuery {
 			        + " AND extract(month from creation_date)=" +mm
 			        + " AND extract(day from creation_date)=" +dd
 			        + " ORDER BY User)"
-			        + "ORDER BY User"
+			        + " ORDER BY User "
 			        + "LIMIT " +limit)
 				
 				.setUseLegacySql(false).build();
