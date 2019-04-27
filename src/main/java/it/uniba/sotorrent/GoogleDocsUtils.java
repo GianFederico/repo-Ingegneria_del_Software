@@ -151,7 +151,7 @@ public class GoogleDocsUtils {
 		List<Request> requests = new ArrayList<>();
 		List<CellData> values = new ArrayList<>();
 
-		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("#")));
+		//values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("#")));
 		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("owner_user_id")));
 		requests.add(new Request().setUpdateCells(
 				new UpdateCellsRequest().setStart(new GridCoordinate().setSheetId(0).setRowIndex(0)

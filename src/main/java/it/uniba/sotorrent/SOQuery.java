@@ -45,9 +45,10 @@ public final class SOQuery implements ISOQuery {
 
 	
 	@Override
-	public Job runQuery(String yyyy, String mm, String dd, String[] type, String limit) throws InterruptedException {
+	public Job runQuery(String yyyy, String mm, String dd, String[] type, String limit,int query) throws InterruptedException {
 		// Use standard SQL syntax for queries.
 		// See: https://cloud.google.com/bigquery/sql-reference/
+
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(
 				
 				      "(SELECT DISTINCT owner_user_id as User "
@@ -91,7 +92,38 @@ public final class SOQuery implements ISOQuery {
 		}
 		return queryJob;
 	}
-	
+	@Override
+	public Job runQuery2(String yyyy, String mm, String[] type, String taglike, String limit,int query) throws InterruptedException {
+		
+		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(
+				"SELECT DISTINCT owner_user_id as User "
+				+ "FROM `bigquery-public-data.stackoverflow.posts_questions` "
+				+ "WHERE owner_user_id IS NOT null "
+					+ "AND post_type_id=1 AND extract(year from creation_date)="+yyyy
+					+ " AND extract(month from creation_date)="+mm
+		            + " AND Tags like '%"+taglike+"%'"
+				+ " ORDER BY owner_user_id ASC "
+				+ "LIMIT " +limit)
+				.setUseLegacySql(false).build();
+		
+		// Create a job ID so that we can safely retry.
+				JobId jobId = JobId.of(UUID.randomUUID().toString());
+				Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build());
+
+				// Wait for the query to complete.
+				queryJob = queryJob.waitFor();
+
+				// Check for errors
+				if (queryJob == null) {
+					throw new RuntimeException("Job no longer exists");
+				} else if (queryJob.getStatus().getError() != null) {
+					// You can also look at queryJob.getStatus().getExecutionErrors() for all
+					// errors, not just the latest one.
+					throw new RuntimeException(queryJob.getStatus().getError().toString());
+				}
+				return queryJob;
+	}
+
 	@Override
 	public Map<String, Double> getResults(final Job queryJob) throws JobException, InterruptedException {
 		Map<String, Double> results = new HashMap<String, Double>();

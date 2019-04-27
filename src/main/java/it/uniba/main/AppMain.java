@@ -46,31 +46,37 @@ public final class AppMain {
 												 URISyntaxException {
 		System.out.println("Current working dir: " + System.getProperty("user.dir"));
 		String[] type= {"",""};
-
+        int query=0;
 		if (args.length > 0) {
 			switch (args[3]) {
 			case "type=question":
 				System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
 				type[0]="1";
 				type[1]="1";
+				query=1;
 				break;
 
 			case "type=answer":
 				System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una risposta ");
 				type[0]="2";
 				type[1]="2";
+				query=1;
 				break;
 				
 			case "type=post":
 				System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno un post ");
 				type[0]="1";
 				type[1]="2";
+				query=1;
 				break;
 				
 			case "taglike=java":
 				switch (args[2]) {
 				case "type=question":
-					System.out.println("");
+					System.out.println("Visualizzare la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda (Question) su un dato argomento (Tag) ");
+					type[0]="1";
+					type[1]="1";
+					query=2;
 					break;
 				
 				case "type=answer":
@@ -87,11 +93,22 @@ public final class AppMain {
 			}
 		String yyyy=args[0].substring(args[0].length() - (args[0].length()-5));
 		String mm=args[1].substring(args[1].length() - (args[1].length()-3));
-		String dd=args[2].substring(args[2].length() - (args[2].length()-3) );
 		String limit=args[4].substring(args[4].length() - (args[4].length()-6));
-	
 		ISOQuery soq = new SOQuery();
-		Job job = soq.runQuery(yyyy, mm, dd, type, limit);
+		Job job;
+		if(query==1)
+		{
+		 String dd=args[2].substring(args[2].length() - (args[2].length()-3) );
+		 job = soq.runQuery(yyyy, mm, dd, type, limit, query);
+		}
+		else
+		{
+		 String taglike=args[3].substring(args[2].length() - (args[2].length()-8));
+		 job = soq.runQuery2(yyyy, mm, type, taglike, limit, query);
+		}
+	
+		
+		
 		Map<String, Double> res = soq.getResults(job);
 		
 
