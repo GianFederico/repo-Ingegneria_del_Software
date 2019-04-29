@@ -45,7 +45,7 @@ public final class SOQuery implements ISOQuery {
 
 	
 	@Override
-	public Job runQuery(String yyyy, String mm, String dd, String[] type, String limit,int query) throws InterruptedException {
+	public Job runQuery(String yyyy, String mm, String dd, String[] type, String limit) throws InterruptedException {
 		// Use standard SQL syntax for queries.
 		// See: https://cloud.google.com/bigquery/sql-reference/
 
@@ -93,15 +93,16 @@ public final class SOQuery implements ISOQuery {
 		return queryJob;
 	}
 	@Override
-	public Job runQuery2(String yyyy, String mm, String[] type, String taglike, String limit,int query) throws InterruptedException {
+	public Job runQuery2(String yyyy, String mm, String[] type, String taglike, String limit) throws InterruptedException {
 		
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(
 				"SELECT DISTINCT owner_user_id as User "
 				+ "FROM `bigquery-public-data.stackoverflow.posts_questions` "
 				+ "WHERE owner_user_id IS NOT null "
-					+ "AND post_type_id=1 AND extract(year from creation_date)="+yyyy
-					+ " AND extract(month from creation_date)="+mm
-		            + " AND Tags like '%"+taglike+"%'"
+				+ "AND post_type_id="+type[0]
+				+" AND extract(year from creation_date)="+yyyy
+				+ " AND extract(month from creation_date)="+mm
+		        + " AND Tags like '%"+taglike+"%'"
 				+ " ORDER BY owner_user_id ASC "
 				+ "LIMIT " +limit)
 				.setUseLegacySql(false).build();

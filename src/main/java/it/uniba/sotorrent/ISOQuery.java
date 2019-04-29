@@ -16,8 +16,8 @@ public interface ISOQuery {
 	 * @return The job for the query.
 	 * @throws InterruptedException Raised on timeouts.
 	 */
-	Job runQuery(String yyyy, String mm, String dd, String[] type, String limit,int query) throws InterruptedException;
-	Job runQuery2(String yyyy, String mm, String[] type, String taglike, String limit,int query) throws InterruptedException;
+	Job runQuery(String yyyy, String mm, String dd, String[] type, String limit) throws InterruptedException;
+	Job runQuery2(String yyyy, String mm, String[] type, String taglike, String limit) throws InterruptedException;
 	
 	/**
 	 * Returns the results from the query job.

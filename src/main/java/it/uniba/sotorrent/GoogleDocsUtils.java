@@ -151,7 +151,7 @@ public class GoogleDocsUtils {
 		List<Request> requests = new ArrayList<>();
 		List<CellData> values = new ArrayList<>();
 
-		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("Row")));
+		//values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("Row")));
 		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("owner_user_id")));
 		requests.add(new Request().setUpdateCells(
 				new UpdateCellsRequest().setStart(new GridCoordinate().setSheetId(0).setRowIndex(0)
@@ -169,8 +169,8 @@ public class GoogleDocsUtils {
 			for (Map.Entry<Long, Long> entry : res.entrySet()) {
 				requests = new ArrayList<>();
 				values = new ArrayList<>();
-				values.add(new CellData()
-						.setUserEnteredValue(new ExtendedValue().setStringValue(String.valueOf(rowIndex))));
+				//values.add(new CellData()
+						//.setUserEnteredValue(new ExtendedValue().setStringValue(String.valueOf(rowIndex))));
 				Long UserID = entry.getValue();
 				values.add(
 						new CellData().setUserEnteredValue(new ExtendedValue()
