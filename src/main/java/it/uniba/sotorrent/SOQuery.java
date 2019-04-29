@@ -125,8 +125,8 @@ public final class SOQuery implements ISOQuery {
 	}
 
 	@Override
-	public Map<String, Double> getResults(final Job queryJob) throws JobException, InterruptedException {
-		Map<String, Double> results = new HashMap<String, Double>();
+	public Map<Long, Long> getResults(final Job queryJob) throws JobException, InterruptedException {
+		Map<Long, Long> results = new HashMap<Long, Long>();
 
 		if (queryJob != null) {
 			TableResult result = queryJob.getQueryResults();
@@ -134,11 +134,9 @@ public final class SOQuery implements ISOQuery {
 			// Print all pages of the results.
 			for (FieldValueList row : result.iterateAll()) {
 				i++;
-				String d=Integer.toString(i);
-				
-				//String UserID=row.get("User").getStringValue();
-				Double UserID = row.get("User").getDoubleValue();
-				System.out.printf("#: %s User: %.0f%n", d, UserID);
+				Long d=(long)i;
+				Long UserID=row.get("User").getLongValue();
+				System.out.printf("#%d User: %d%n", d, UserID);
 				results.put(d, UserID);
 			}
 		}
