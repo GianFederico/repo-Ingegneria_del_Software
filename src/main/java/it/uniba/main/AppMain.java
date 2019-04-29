@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
 import java.util.Map;
 
 import com.google.cloud.bigquery.Job;
@@ -45,6 +44,8 @@ public final class AppMain {
 												 GeneralSecurityException,
 												 URISyntaxException {
 		System.out.println("Current working dir: " + System.getProperty("user.dir"));
+		GoogleDocsUtils ut = new GoogleDocsUtils();
+		String spid="";
 		String[] type= {"",""};
         int query=0;
 		if (args.length > 0) {
@@ -54,6 +55,7 @@ public final class AppMain {
 				type[0]="1";
 				type[1]="1";
 				query=1;
+				spid = ut.createSheet("Sprint 1 hopcroft - User Story 1");
 				break;
 
 			case "type=answer":
@@ -61,6 +63,7 @@ public final class AppMain {
 				type[0]="2";
 				type[1]="2";
 				query=1;
+				spid = ut.createSheet("Sprint 1 hopcroft - User Story 2");
 				break;
 				
 			case "type=post":
@@ -68,6 +71,7 @@ public final class AppMain {
 				type[0]="1";
 				type[1]="2";
 				query=1;
+				spid = ut.createSheet("Sprint 1 hopcroft - User Story 3");
 				break;
 				
 			case "taglike=java":
@@ -77,6 +81,7 @@ public final class AppMain {
 					type[0]="1";
 					type[1]="1";
 					query=2;
+					spid = ut.createSheet("Sprint 1 hopcroft - User Story 4");
 					break;
 				
 				case "type=answer":
@@ -106,14 +111,9 @@ public final class AppMain {
 		 String taglike=args[3].substring(args[2].length() - (args[2].length()-8));
 		 job = soq.runQuery2(yyyy, mm, type, taglike, limit, query);
 		}
-	
 		
+		Map<Long, Long> res = soq.getResults(job);
 		
-		Map<String, Double> res = soq.getResults(job);
-		
-
-		GoogleDocsUtils ut = new GoogleDocsUtils();
-		String spid = ut.createSheet("Prova sna4so");
 		ut.shareSheet(spid);
 		ut.getSheetByTitle(spid);
 		ut.writeSheet(spid, res);

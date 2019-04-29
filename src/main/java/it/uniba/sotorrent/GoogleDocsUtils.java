@@ -147,17 +147,17 @@ public class GoogleDocsUtils {
 	 * @param res The hash map of the results, with URL as key and view count as value.
 	 * @throws IOException Generic I/O error.
 	 */
-	public void writeSheet(final String spid, final Map<String, Double> res) throws IOException {
+	public void writeSheet(final String spid, final Map<Long, Long> res) throws IOException {
 		List<Request> requests = new ArrayList<>();
 		List<CellData> values = new ArrayList<>();
 
-		//values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("#")));
+		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("Row")));
 		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("owner_user_id")));
 		requests.add(new Request().setUpdateCells(
 				new UpdateCellsRequest().setStart(new GridCoordinate().setSheetId(0).setRowIndex(0)
 						.setColumnIndex(0))
 						.setRows(Arrays.asList(new RowData().setValues(values)))
-						.setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
+						.setFields("*,userEnteredFormat.backgroundColor")));
 
 		BatchUpdateSpreadsheetRequest batchUpdateRequest =
 				new BatchUpdateSpreadsheetRequest().setRequests(requests);
@@ -166,20 +166,19 @@ public class GoogleDocsUtils {
 
 		if (null != res) {
 			int rowIndex = 1;
-			for (Map.Entry<String, Double> entry : res.entrySet()) {
+			for (Map.Entry<Long, Long> entry : res.entrySet()) {
 				requests = new ArrayList<>();
 				values = new ArrayList<>();
-
-				//String key = entry.getKey();
-				//values.add(new CellData()
-				//		.setUserEnteredValue(new ExtendedValue().setStringValue(key)));
-				Double UserID = entry.getValue();
+				values.add(new CellData()
+						.setUserEnteredValue(new ExtendedValue().setStringValue(String.valueOf(rowIndex))));
+				Long UserID = entry.getValue();
 				values.add(
 						new CellData().setUserEnteredValue(new ExtendedValue()
-								.setNumberValue(UserID)));
+								.setStringValue(String.valueOf(UserID))));
 				requests.add(new Request().setUpdateCells(new UpdateCellsRequest()
-						.setStart(new GridCoordinate().setSheetId(0).setRowIndex(rowIndex)
-								
+						.setStart(new GridCoordinate()
+								.setSheetId(0)
+								.setRowIndex(rowIndex)
 								.setColumnIndex(0))
 						.setRows(Arrays.asList(new RowData().setValues(values)))
 						.setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
@@ -189,9 +188,7 @@ public class GoogleDocsUtils {
 
 				rowIndex++;
 			}
-						
 		}
-
 	}
 
 	/**
