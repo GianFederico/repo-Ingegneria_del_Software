@@ -157,7 +157,7 @@ public class GoogleDocsUtils {
 				new UpdateCellsRequest().setStart(new GridCoordinate().setSheetId(0).setRowIndex(0)
 						.setColumnIndex(0))
 						.setRows(Arrays.asList(new RowData().setValues(values)))
-						.setFields("*,userEnteredFormat.backgroundColor")));
+						.setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
 
 		BatchUpdateSpreadsheetRequest batchUpdateRequest =
 				new BatchUpdateSpreadsheetRequest().setRequests(requests);
