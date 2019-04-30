@@ -130,6 +130,7 @@ public final class AppMain {
 		ut.shareSheet(spid);
 		ut.getSheetByTitle(spid);
 		ut.writeSheet(spid, res);
+		System.exit(0);
 
 	}
 
