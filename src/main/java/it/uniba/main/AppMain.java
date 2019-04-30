@@ -48,7 +48,8 @@ public final class AppMain {
 		String spid="";
 		String[] type= {"",""};
         int query=0;
-                
+        
+        
 		if (args.length > 0) {
 			switch (args[3]) {
 			case "type=question":
@@ -89,17 +90,12 @@ public final class AppMain {
 					case "type=answer":
 						System.out.println("Visualizzare la lista dei primi 100 id utente (User) che hanno dato almeno una risposta (Answer) su un dato argomento (Tag) ");
 						type[0]="2";
-						type[1]="2";
-						query=2;
+						query=3;
 						spid = ut.createSheet("Sprint 1 hopcroft - User Story 5");
 						break;
 					
 					case "type=post":
-						System.out.println("Visualizzare la lista dei primi 100 id utente (User) che hanno fatto almeno un Post su un dato argomento (Tag)");
-						type[0]="1";
-						type[1]="2";
-						query=2;
-						spid = ut.createSheet("Sprint 1 hopcroft - User Story 6");
+						System.out.println("");
 						break;
 					}
 				} else {System.out.println("Inserire dati in formato yyyy=____ mm=__ dd=__ type=________ limit=___ \n oppure yyyy=____ mm=__ type=________ taglike=____ limit=___");
@@ -118,12 +114,19 @@ public final class AppMain {
 		
 		String taglike="";
 		
-		if(query==1) {
+		switch(query) {
+		case 1:
 			String dd=(args[2].split("="))[1];
-			job = soq.runQuery(yyyy, mm, dd, type, limit);
-		}else{
+			 job = soq.runQuery(yyyy, mm, dd, type, limit);
+			break;
+		case 2:
 			taglike=(args[3].split("="))[1];
 			job = soq.runQuery2(yyyy, mm, type, taglike, limit);
+			break;
+		case 3:
+			taglike=(args[3].split("="))[1];
+			job = soq.runQuery3(yyyy, mm, type, taglike, limit);
+			break;
 		}
 				
 		Map<Long, Double> res = soq.getResults(job);

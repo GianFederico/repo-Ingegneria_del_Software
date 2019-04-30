@@ -96,29 +96,15 @@ public final class SOQuery implements ISOQuery {
 	public Job runQuery2(String yyyy, String mm, String[] type, String taglike, String limit) throws InterruptedException {
 		
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(
-				 "(SELECT DISTINCT owner_user_id as User "
+				"SELECT DISTINCT owner_user_id as User "
 				+ "FROM `bigquery-public-data.stackoverflow.posts_questions` "
 				+ "WHERE owner_user_id IS NOT null"
 				+ " AND post_type_id="+type[0]
 				+ " AND extract(year from creation_date)="+yyyy
 				+ " AND extract(month from creation_date)="+mm
 		        + " AND Tags like '%"+taglike+"%'"
-				+ " ORDER BY owner_user_id ASC)"
-				
-				+ " UNION DISTINCT "
-				
-				+ "( SELECT DISTINCT Risposte.owner_user_id as User "
-			    + "FROM `bigquery-public-data.stackoverflow.posts_answers` as Risposte "
-                + "INNER JOIN `bigquery-public-data.stackoverflow.posts_questions` as Domande "
-                + "ON Domande.id = Risposte.parent_id "
-				+ "WHERE Risposte.owner_user_id IS NOT null "
-				+ "AND Risposte.post_type_id="+type[1]+" AND extract(year from Risposte.creation_date)="+yyyy
-				+ " AND extract(month from Risposte.creation_date)="+mm
-                + " AND Domande.Tags LIKE '%"+taglike+"%' "
-                + "ORDER BY Risposte.owner_user_id ASC)"
-				+ " ORDER BY User "
-				+ "LIMIT " +limit)
-				
+				+ " ORDER BY owner_user_id ASC"
+				+ " LIMIT " +limit)
 				.setUseLegacySql(false).build();
 		
 		// Create a job ID so that we can safely retry.
@@ -139,6 +125,40 @@ public final class SOQuery implements ISOQuery {
 				return queryJob;
 	}
 
+	@Override
+	public Job runQuery3(String yyyy, String mm, String[] type, String taglike, String limit) throws InterruptedException {
+		
+		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(
+				
+				"SELECT DISTINCT Risposte.owner_user_id as User "
+			    + "FROM `bigquery-public-data.stackoverflow.posts_answers` as Risposte "
+                + "INNER JOIN `bigquery-public-data.stackoverflow.posts_questions` as Domande "
+                + "ON Domande.id = Risposte.parent_id "
+				+ "WHERE Risposte.owner_user_id IS NOT null "
+				+ "AND Risposte.post_type_id="+type[0]+" AND extract(year from Risposte.creation_date)="+yyyy
+				+ " AND extract(month from Risposte.creation_date)="+mm
+                + " AND Domande.Tags LIKE '%"+taglike+"%' "
+                + "ORDER BY Risposte.owner_user_id "
+                + "LIMIT " +limit)
+				.setUseLegacySql(false).build();
+		
+		// Create a job ID so that we can safely retry.
+				JobId jobId = JobId.of(UUID.randomUUID().toString());
+				Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build());
+
+				// Wait for the query to complete.
+				queryJob = queryJob.waitFor();
+
+				// Check for errors
+				if (queryJob == null) {
+					throw new RuntimeException("Job no longer exists");
+				} else if (queryJob.getStatus().getError() != null) {
+					// You can also look at queryJob.getStatus().getExecutionErrors() for all
+					// errors, not just the latest one.
+					throw new RuntimeException(queryJob.getStatus().getError().toString());
+				}
+				return queryJob;
+	}
 	
 	@Override
 	public Map<Long, Double> getResults(final Job queryJob) throws JobException, InterruptedException {
@@ -152,6 +172,7 @@ public final class SOQuery implements ISOQuery {
 				i++;
 				Long d=(long)i;
 				Double UserID=row.get("User").getDoubleValue();
+				//Long UserID=row.get("User").getLongValue();
 				System.out.printf("#%d User: %.0f%n", d, UserID);
 				results.put(d, UserID);
 			}
