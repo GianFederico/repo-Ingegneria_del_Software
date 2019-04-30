@@ -94,11 +94,11 @@ public final class AppMain {
 						System.out.println("");
 						break;
 					}
-				} else {System.out.println("Inserire dati in formato yyyy=____ mm=__ dd=__ type=________ limit=___ /n oppure yyyy=____ mm=__ type=________ taglike=____ limit=___");
+				} else {System.out.println("Inserire dati in formato yyyy=____ mm=__ dd=__ type=________ limit=___ \n oppure yyyy=____ mm=__ type=________ taglike=____ limit=___");
 					System.exit(0);
 					}
 			}
-		} else {System.out.println("Inserire dati in formato yyyy=____ mm=__ dd=__ type=________ limit=___ /n oppure yyyy=____ mm=__ type=________ taglike=____ limit=___");
+		} else {System.out.println("Inserire dati in formato yyyy=____ mm=__ dd=__ type=________ limit=___ \n oppure yyyy=____ mm=__ type=________ taglike=____ limit=___");
 				System.exit(0);
 			}
 		
@@ -118,7 +118,7 @@ public final class AppMain {
 			job = soq.runQuery2(yyyy, mm, type, taglike, limit);
 		}
 				
-		Map<Long, Long> res = soq.getResults(job);
+		Map<Long, Double> res = soq.getResults(job);
 		ut.shareSheet(spid);
 		ut.getSheetByTitle(spid);
 		ut.writeSheet(spid, res);

@@ -26,6 +26,6 @@ public interface ISOQuery {
 	 * @throws JobException Generic error occurred.
 	 * @throws InterruptedException Raised on timeouts.
 	 */
-	Map<Long, Long> getResults(Job job) throws JobException, InterruptedException;
+	Map<Long, Double> getResults(Job job) throws JobException, InterruptedException;
 
 }

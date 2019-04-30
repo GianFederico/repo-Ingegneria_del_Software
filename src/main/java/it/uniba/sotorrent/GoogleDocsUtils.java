@@ -147,7 +147,7 @@ public class GoogleDocsUtils {
 	 * @param res The hash map of the results, with URL as key and view count as value.
 	 * @throws IOException Generic I/O error.
 	 */
-	public void writeSheet(final String spid, final Map<Long, Long> res) throws IOException {
+	public void writeSheet(final String spid, final Map<Long, Double> res) throws IOException {
 		List<Request> requests = new ArrayList<>();
 		List<CellData> values = new ArrayList<>();
 
@@ -166,15 +166,15 @@ public class GoogleDocsUtils {
 
 		if (null != res) {
 			int rowIndex = 1;
-			for (Map.Entry<Long, Long> entry : res.entrySet()) {
+			for (Map.Entry<Long, Double> entry : res.entrySet()) {
 				requests = new ArrayList<>();
 				values = new ArrayList<>();
 				//values.add(new CellData()
 						//.setUserEnteredValue(new ExtendedValue().setStringValue(String.valueOf(rowIndex))));
-				Long UserID = entry.getValue();
+				Double UserID = entry.getValue();
 				values.add(
-						new CellData().setUserEnteredValue(new ExtendedValue()
-								.setStringValue(String.valueOf(UserID))));
+						new CellData().setUserEnteredValue(new ExtendedValue().setNumberValue(UserID)));
+								//.setStringValue(String.valueOf(ID))));
 				requests.add(new Request().setUpdateCells(new UpdateCellsRequest()
 						.setStart(new GridCoordinate()
 								.setSheetId(0)
