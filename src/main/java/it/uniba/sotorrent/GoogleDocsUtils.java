@@ -174,6 +174,7 @@ public class GoogleDocsUtils {
 				Double UserID = entry.getValue();
 				values.add(
 						new CellData().setUserEnteredValue(new ExtendedValue().setNumberValue(UserID)));
+								//.setStringValue(String.valueOf(ID))));
 				requests.add(new Request().setUpdateCells(new UpdateCellsRequest()
 						.setStart(new GridCoordinate()
 								.setSheetId(0)
