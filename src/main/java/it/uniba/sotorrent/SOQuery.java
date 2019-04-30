@@ -45,7 +45,7 @@ public final class SOQuery implements ISOQuery {
 
 	
 	@Override
-	public Job runQuery(String yyyy, String mm, String dd, String[] type, String limit,int query) throws InterruptedException {
+	public Job runQuery(String yyyy, String mm, String dd, String[] type, String limit) throws InterruptedException {
 		// Use standard SQL syntax for queries.
 		// See: https://cloud.google.com/bigquery/sql-reference/
 
@@ -93,17 +93,18 @@ public final class SOQuery implements ISOQuery {
 		return queryJob;
 	}
 	@Override
-	public Job runQuery2(String yyyy, String mm, String[] type, String taglike, String limit,int query) throws InterruptedException {
+	public Job runQuery2(String yyyy, String mm, String[] type, String taglike, String limit) throws InterruptedException {
 		
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(
 				"SELECT DISTINCT owner_user_id as User "
 				+ "FROM `bigquery-public-data.stackoverflow.posts_questions` "
-				+ "WHERE owner_user_id IS NOT null "
-					+ "AND post_type_id=1 AND extract(year from creation_date)="+yyyy
-					+ " AND extract(month from creation_date)="+mm
-		            + " AND Tags like '%"+taglike+"%'"
-				+ " ORDER BY owner_user_id ASC "
-				+ "LIMIT " +limit)
+				+ "WHERE owner_user_id IS NOT null"
+				+ " AND post_type_id="+type[0]
+				+ " AND extract(year from creation_date)="+yyyy
+				+ " AND extract(month from creation_date)="+mm
+		        + " AND Tags like '%"+taglike+"%'"
+				+ " ORDER BY owner_user_id ASC"
+				+ " LIMIT " +limit)
 				.setUseLegacySql(false).build();
 		
 		// Create a job ID so that we can safely retry.
@@ -125,8 +126,8 @@ public final class SOQuery implements ISOQuery {
 	}
 
 	@Override
-	public Map<Long, Long> getResults(final Job queryJob) throws JobException, InterruptedException {
-		Map<Long, Long> results = new HashMap<Long, Long>();
+	public Map<Long, Double> getResults(final Job queryJob) throws JobException, InterruptedException {
+		Map<Long, Double> results = new HashMap<Long, Double>();
 
 		if (queryJob != null) {
 			TableResult result = queryJob.getQueryResults();
@@ -135,8 +136,9 @@ public final class SOQuery implements ISOQuery {
 			for (FieldValueList row : result.iterateAll()) {
 				i++;
 				Long d=(long)i;
-				Long UserID=row.get("User").getLongValue();
-				System.out.printf("#%d User: %d%n", d, UserID);
+				Double UserID=row.get("User").getDoubleValue();
+				//Long UserID=row.get("User").getLongValue();
+				System.out.printf("#%d User: %.0f%n", d, UserID);
 				results.put(d, UserID);
 			}
 		}

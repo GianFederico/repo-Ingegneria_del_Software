@@ -48,6 +48,7 @@ public final class AppMain {
 		String spid="";
 		String[] type= {"",""};
         int query=0;
+        
 		if (args.length > 0) {
 			switch (args[3]) {
 			case "type=question":
@@ -59,7 +60,7 @@ public final class AppMain {
 				break;
 
 			case "type=answer":
-				System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una risposta ");
+				System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno dato almeno una risposta ");
 				type[0]="2";
 				type[1]="2";
 				query=1;
@@ -74,46 +75,50 @@ public final class AppMain {
 				spid = ut.createSheet("Sprint 1 hopcroft - User Story 3");
 				break;
 				
-			case "taglike=java":
-				switch (args[2]) {
-				case "type=question":
-					System.out.println("Visualizzare la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda (Question) su un dato argomento (Tag) ");
-					type[0]="1";
-					type[1]="1";
-					query=2;
-					spid = ut.createSheet("Sprint 1 hopcroft - User Story 4");
-					break;
+			default: 
+				if (((args[3].split("="))[0]).equals("taglike")) {
+					switch (args[2]) {
+					case "type=question":
+						System.out.println("Visualizzare la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda (Question) su un dato argomento (Tag) ");
+						type[0]="1";
+						type[1]="1";
+						query=2;
+						spid = ut.createSheet("Sprint 1 hopcroft - User Story 4");
+						break;
 				
-				case "type=answer":
-					System.out.println("");
-					break;
+					case "type=answer":
+						System.out.println("");
+						break;
 					
-				case "type=post":
-					System.out.println("");
-					break;
-				}
+					case "type=post":
+						System.out.println("");
+						break;
+					}
+				} else {System.out.println("Inserire dati in formato yyyy=____ mm=__ dd=__ type=________ limit=___ \n oppure yyyy=____ mm=__ type=________ taglike=____ limit=___");
+					System.exit(0);
+					}
 			}
-		} else {System.out.println("Inserire dati in formato yyyy=____ mm=__ dd=__ type=________ limit=___ %n oppure yyyy=____ mm=__ type=________ taglike=____ limit=___");
+		} else {System.out.println("Inserire dati in formato yyyy=____ mm=__ dd=__ type=________ limit=___ \n oppure yyyy=____ mm=__ type=________ taglike=____ limit=___");
 				System.exit(0);
 			}
-		String yyyy=args[0].substring(args[0].length() - (args[0].length()-5));
-		String mm=args[1].substring(args[1].length() - (args[1].length()-3));
-		String limit=args[4].substring(args[4].length() - (args[4].length()-6));
+		
+		String yyyy=(args[0].split("="))[1];
+		String mm=(args[1].split("="))[1];
+		String limit=(args[4].split("="))[1];
 		ISOQuery soq = new SOQuery();
 		Job job;
 		if(query==1)
 		{
-		 String dd=args[2].substring(args[2].length() - (args[2].length()-3) );
-		 job = soq.runQuery(yyyy, mm, dd, type, limit, query);
+		 String dd=(args[2].split("="))[1];
+		 job = soq.runQuery(yyyy, mm, dd, type, limit);
 		}
 		else
 		{
-		 String taglike=args[3].substring(args[2].length() - (args[2].length()-8));
-		 job = soq.runQuery2(yyyy, mm, type, taglike, limit, query);
+			String taglike=(args[3].split("="))[1];
+			job = soq.runQuery2(yyyy, mm, type, taglike, limit);
 		}
-		
-		Map<Long, Long> res = soq.getResults(job);
-		
+				
+		Map<Long, Double> res = soq.getResults(job);
 		ut.shareSheet(spid);
 		ut.getSheetByTitle(spid);
 		ut.writeSheet(spid, res);
