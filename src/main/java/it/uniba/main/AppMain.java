@@ -49,6 +49,7 @@ public final class AppMain {
 		String[] type= {"",""};
         int query=0;
         
+        
 		if (args.length > 0) {
 			switch (args[3]) {
 			case "type=question":
@@ -87,7 +88,10 @@ public final class AppMain {
 						break;
 				
 					case "type=answer":
-						System.out.println("");
+						System.out.println("Visualizzare la lista dei primi 100 id utente (User) che hanno dato almeno una risposta (Answer) su un dato argomento (Tag) ");
+						type[0]="2";
+						query=3;
+						spid = ut.createSheet("Sprint 1 hopcroft - User Story 5");
 						break;
 					
 					case "type=post":
@@ -106,16 +110,23 @@ public final class AppMain {
 		String mm=(args[1].split("="))[1];
 		String limit=(args[4].split("="))[1];
 		ISOQuery soq = new SOQuery();
-		Job job;
-		if(query==1)
-		{
-		 String dd=(args[2].split("="))[1];
-		 job = soq.runQuery(yyyy, mm, dd, type, limit);
-		}
-		else
-		{
-			String taglike=(args[3].split("="))[1];
+		Job job = null;
+		
+		String taglike="";
+		
+		switch(query) {
+		case 1:
+			String dd=(args[2].split("="))[1];
+			 job = soq.runQuery(yyyy, mm, dd, type, limit);
+			break;
+		case 2:
+			taglike=(args[3].split("="))[1];
 			job = soq.runQuery2(yyyy, mm, type, taglike, limit);
+			break;
+		case 3:
+			taglike=(args[3].split("="))[1];
+			job = soq.runQuery3(yyyy, mm, type, taglike, limit);
+			break;
 		}
 				
 		Map<Long, Double> res = soq.getResults(job);
