@@ -115,9 +115,7 @@ public final class AppMain {
 		String limit=(args[4].split("="))[1];
 		ISOQuery soq = new SOQuery();
 		Job job = null;
-		
 		String taglike="";
-		
 		if(query==1) {
 			String dd=(args[2].split("="))[1];
 			job = soq.runQuery(yyyy, mm, dd, type, limit);
@@ -125,7 +123,6 @@ public final class AppMain {
 			taglike=(args[3].split("="))[1];
 			job = soq.runQuery2(yyyy, mm, type, taglike, limit);
 		}
-				
 		Map<Long, Double> res = soq.getResults(job);
 		ut.shareSheet(spid);
 		ut.getSheetByTitle(spid);
