@@ -45,7 +45,7 @@ public final class SOQuery implements ISOQuery {
 
 	
 	@Override
-	public Job runQuery(String yyyy, String mm, String dd, String[] type, String limit) throws InterruptedException {
+	public Job runQuery1to3S1(String yyyy, String mm, String dd, String[] type, String limit) throws InterruptedException {
 		// Use standard SQL syntax for queries.
 		// See: https://cloud.google.com/bigquery/sql-reference/
 
@@ -93,7 +93,7 @@ public final class SOQuery implements ISOQuery {
 		return queryJob;
 	}
 	@Override
-	public Job runQuery2(String yyyy, String mm, String[] type, String taglike, String limit) throws InterruptedException {
+	public Job runQuery4to6S1(String yyyy, String mm, String[] type, String taglike, String limit) throws InterruptedException {
 		
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(
 				 "(SELECT DISTINCT owner_user_id as User "
@@ -138,22 +138,69 @@ public final class SOQuery implements ISOQuery {
 				}
 				return queryJob;
 	}
+	
+	@Override
+	public Job runQuery1to3S2(String yyyy, String mm, String dd, String limit) throws InterruptedException{
+
+		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder("SELECT Risposte.owner_user_id as Ris, Domande.owner_user_id as Dom " 
+				+"FROM `bigquery-public-data.stackoverflow.posts_questions` as Domande " 
+				+"INNER JOIN `bigquery-public-data.stackoverflow.posts_answers` as Risposte ON Domande.id = Risposte.parent_id " 
+				+"WHERE Risposte.owner_user_id is NOT NULL "
+				+"AND Domande.owner_user_id is NOT NULL "
+				+"AND extract(year from Domande.creation_date)="+yyyy
+				+" AND extract(month from Domande.creation_date)="+mm
+				+" AND extract(day from Domande.creation_date)="+dd
+				+" ORDER BY Ris, Dom" 
+				+" LIMIT "+limit)
+				
+				.setUseLegacySql(false).build();
+		
+		// Create a job ID so that we can safely retry.
+				JobId jobId = JobId.of(UUID.randomUUID().toString());
+				Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build());
+
+				// Wait for the query to complete.
+				queryJob = queryJob.waitFor();
+
+				// Check for errors
+				if (queryJob == null) {
+					throw new RuntimeException("Job no longer exists");
+				} else if (queryJob.getStatus().getError() != null) {
+					// You can also look at queryJob.getStatus().getExecutionErrors() for all
+					// errors, not just the latest one.
+					throw new RuntimeException(queryJob.getStatus().getError().toString());
+				}
+				return queryJob;
+	}
 
 	
 	@Override
-	public Map<Long, Double> getResults(final Job queryJob) throws JobException, InterruptedException {
-		Map<Long, Double> results = new HashMap<Long, Double>();
+	public Map<Double, Double> getResults(final Job queryJob, int query) throws JobException, InterruptedException {
+		Map<Double, Double> results = new HashMap<Double, Double>();
 
 		if (queryJob != null) {
 			TableResult result = queryJob.getQueryResults();
-			int i=0;
+			
+			if (query>3) {
+				int i=0;
+				// Print all pages of the results.
+				for (FieldValueList row : result.iterateAll()) {
+					i++;
+					Long d=(long)i;
+					Double from=row.get("Ris").getDoubleValue();
+					Double to=row.get("Dom").getDoubleValue();
+					System.out.printf("#%d from:%.0f to: %.0f%n", d, from, to);
+					results.put(from, to);
+			}
+				}else {
+			Double d=0.0;
 			// Print all pages of the results.
 			for (FieldValueList row : result.iterateAll()) {
-				i++;
-				Long d=(long)i;
+				d++;
 				Double UserID=row.get("User").getDoubleValue();
-				System.out.printf("#%d User: %.0f%n", d, UserID);
+				System.out.printf("#%.0f User: %.0f%n", d, UserID);
 				results.put(d, UserID);
+			}
 			}
 		}
 		return results;
