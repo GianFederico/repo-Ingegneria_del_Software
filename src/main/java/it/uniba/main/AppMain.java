@@ -49,14 +49,14 @@ public final class AppMain {
 		String spid="";
 		String[] type= {"",""};
         int query=0;
-        String[] prova= {"yyyy=2016", "mm=02", "dd=11", "type=question", "edge=yes", "limit=100"};        
+        //String[] prova= {"yyyy=2016", "mm=02", "dd=11", "type=question", "edge=yes", "limit=100"};        
         
-		if (prova.length > 0) {
-			switch (prova[3]) {
+		if (args.length > 0) {
+			switch (args[3]) {
 			case "type=question":
-				switch ((prova[4].split("=")[0])){
+				switch ((args[4].split("=")[0])){
 					case "edge":
-						if (((prova[4].split("="))[1]).equals("yes")){
+						if (((args[4].split("="))[1]).equals("yes")){
 							System.out.println("Visualizzare la lista delle prime 100 coppie (from, to) relative a domande (Question) poste in un "
 								+	"dato anno, mese e giorno");
 							query=4;
@@ -96,8 +96,8 @@ public final class AppMain {
 				break;
 				
 			default: 
-				if (((prova[3].split("="))[0]).equals("taglike")) {
-					switch (prova[2]) {
+				if (((args[3].split("="))[0]).equals("taglike")) {
+					switch (args[2]) {
 					case "type=question":
 						System.out.println("Visualizzare la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda (Question) su un dato argomento (Tag) ");
 						type[0]="1";
@@ -132,8 +132,8 @@ public final class AppMain {
 				System.exit(0);
 			}
 		
-		String yyyy=(prova[0].split("="))[1];
-		String mm=(prova[1].split("="))[1];
+		String yyyy=(args[0].split("="))[1];
+		String mm=(args[1].split("="))[1];
 		String dd="";
 		ISOQuery soq = new SOQuery();
 		Job job = null;
@@ -141,23 +141,23 @@ public final class AppMain {
 		String limit="";
 		switch (query) {
 			case 1:
-				limit=(prova[4].split("="))[1];
-				dd=(prova[2].split("="))[1];
+				limit=(args[4].split("="))[1];
+				dd=(args[2].split("="))[1];
 				job = soq.runQuerySprint1(yyyy, mm, dd, type, limit);
 				break;
 			case 2:
-				limit=(prova[4].split("="))[1];
-				taglike=(prova[3].split("="))[1];
+				limit=(args[4].split("="))[1];
+				taglike=(args[3].split("="))[1];
 				job = soq.runQuerySprint1(yyyy, mm, type, taglike, limit);
 				break;
 			case 3:
-				limit=(prova[5].split("="))[1];
-				dd=(prova[2].split("="))[1];
+				limit=(args[5].split("="))[1];
+				dd=(args[2].split("="))[1];
 				job = soq.runQuerySprint1(yyyy, mm, dd, type, limit);
 				break;
 			case 4:
-				limit=(prova[5].split("="))[1];
-				dd=(prova[2].split("="))[1];
+				limit=(args[5].split("="))[1];
+				dd=(args[2].split("="))[1];
 				job = soq.runQuery1to3S2(yyyy, mm, dd, limit);
 				break;
 				
