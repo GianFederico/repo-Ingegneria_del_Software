@@ -167,19 +167,33 @@ public class GoogleDocsUtils {
 		List<CellData> values = new ArrayList<>();
 		String[] colonne= {"","to","weight"};
 		int rowIndex=0;
-        if(query<4) {
-            colonne[0]="owner_user_id";
-            values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[0])));
-        }else {
-        	colonne[0]="from";
-            values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[0])));
-            values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[1])));
-        }
+		switch (query) {
+        	case 1: case 2: case 3:
+        		colonne[0]="owner_user_id";
+        		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[0])));
+            break;
+            
+	        case 4: case 5: case 6:
+	        	colonne[0]="from";
+	        	values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[0])));
+	        	values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[1])));
+	        break;
+	        
+	        case 7:
+	        	colonne[0]="from";
+	        	values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[0])));
+	        	values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[1])));
+	        	values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[2])));
+	        	break;
+		}
         writeRequest(values, spid, rowIndex);
+        
+        
 		if (null != res) {
 
 			rowIndex = 1;
-			if (query<4) {
+			switch (query) {
+        	case 1: case 2: case 3:
 				for(int i=0;i<res.size();i++) {
 					values = new ArrayList<>();
 					Long[] UserID=res.get(i);
@@ -188,7 +202,8 @@ public class GoogleDocsUtils {
 					writeRequest(values, spid, rowIndex);
 					rowIndex++;
 				}
-			}else {
+			break;
+        	case 4: case 5: case 6:
 				for(int i=0;i<res.size();i++) {
 					values = new ArrayList<>();
 					Long[] valori=res.get(i);
@@ -200,7 +215,21 @@ public class GoogleDocsUtils {
 					rowIndex++;
 					
 				}
-
+				break;
+        	case 7:
+        		for(int i=0;i<res.size();i++) {
+					values = new ArrayList<>();
+					Long[] valori=res.get(i);
+					values.add(
+							new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(String.valueOf(valori[0]))));
+					values.add(
+							new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(String.valueOf(valori[1]))));
+					values.add(
+							new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(String.valueOf(valori[2]))));
+					writeRequest(values, spid, rowIndex);
+					rowIndex++;
+				}
+        		break;
 			}
 		}
 	}
