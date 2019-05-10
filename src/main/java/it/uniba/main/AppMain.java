@@ -134,7 +134,13 @@ public final class AppMain {
 						query=5;
 						spid = ut.createSheet("Sprint 2 hopcroft - User Story 2");
 						break;
+					case "type=answer":
+						System.out.println("Visualizzare la lista delle prime 100 coppie (from, to) relative a risposte (Answer) date da un determinato utente.");
+						query=6;            
+						spid = ut.createSheet("Sprint 2 hopcroft - User Story 3");
 					}
+					
+					
 				break;
 					
 				 default: {System.out.println("Inserire dati in formato yyyy=____ mm=__ dd=__ type=________ limit=___ \n oppure yyyy=____ mm=__ type=________ taglike=____ limit=___ "
@@ -181,9 +187,13 @@ public final class AppMain {
 			case 5:
 				limit=(args[3].split("="))[1];
 				user=(args[1].split("="))[1];
-				job = soq.runQuerySprint2(user, limit);
-				
-				
+				job = soq.runQuerySprint2(user, limit, "Ris", "Domande", "Risposte");
+				break;
+			case 6:
+				limit=(args[3].split("="))[1];
+				user=(args[1].split("="))[1];
+				job = soq.runQuerySprint2(user, limit, "Dom", "Risposte", "Domande");
+				break;
 				
 		}
 		
