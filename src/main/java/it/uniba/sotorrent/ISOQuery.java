@@ -19,7 +19,7 @@ public interface ISOQuery {
 	Job runQuerySprint1(String yyyy, String mm, String dd, String[] type, String limit) throws InterruptedException;
 	Job runQuerySprint1(String yyyy, String mm, String[] type, String taglike, String limit) throws InterruptedException;
 	Job runQuerySprint2(String yyyy, String mm, String dd, String limit) throws InterruptedException;
-	Job runQuerySprint2(String user, String limit) throws InterruptedException;
+	Job runQuerySprint2(String user, String limit, String order, String where, String nnull) throws InterruptedException;
 	/**
 	 * Returns the results from the query job.
 	 * @param job The job associated to the query.
