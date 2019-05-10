@@ -163,7 +163,7 @@ public class GoogleDocsUtils {
 	 * @param res The hash map of the results, with URL as key and view count as value.
 	 * @throws IOException Generic I/O error.
 	 */	
-	public void writeSheet(final String spid, final List<Long[]> res, int limit, int query) throws IOException {
+	public void writeSheet(final String spid, final List<Long[]> res, int query) throws IOException {
 		List<CellData> values = new ArrayList<>();
 		String[] colonne= {"","to","weight"};
 		int rowIndex=0;
@@ -180,7 +180,7 @@ public class GoogleDocsUtils {
 
 			rowIndex = 1;
 			if (query<4) {
-				for(int i=0;i<limit;i++) {
+				for(int i=0;i<res.size();i++) {
 					values = new ArrayList<>();
 					Long[] UserID=res.get(i);
 					values.add(
@@ -189,7 +189,7 @@ public class GoogleDocsUtils {
 					rowIndex++;
 				}
 			}else {
-				for(int i=0;i<limit;i++) {
+				for(int i=0;i<res.size();i++) {
 					values = new ArrayList<>();
 					Long[] valori=res.get(i);
 					values.add(

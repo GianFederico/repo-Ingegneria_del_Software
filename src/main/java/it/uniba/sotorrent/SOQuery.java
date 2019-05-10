@@ -145,7 +145,7 @@ public final class SOQuery implements ISOQuery {
 	}
 	
 	@Override
-	public Job runQuery1to3S2(String yyyy, String mm, String dd, String limit) throws InterruptedException{
+	public Job runQuerySprint2(String yyyy, String mm, String dd, String limit) throws InterruptedException{
 
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder("SELECT Risposte.owner_user_id as Ris, Domande.owner_user_id as Dom " 
 				+"FROM `bigquery-public-data.stackoverflow.posts_questions` as Domande " 
@@ -177,6 +177,38 @@ public final class SOQuery implements ISOQuery {
 				}
 				return queryJob;
 	}
+	
+	@Override
+	public Job runQuerySprint2(String user, String limit) throws InterruptedException{
+		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder("SELECT distinct Risposte.owner_user_id as Ris, Domande.owner_user_id as Dom " 
+				+"FROM `bigquery-public-data.stackoverflow.posts_questions` as Domande " 
+				+"INNER JOIN `bigquery-public-data.stackoverflow.posts_answers` as Risposte ON Domande.id = Risposte.parent_id " 
+				+"WHERE Domande.owner_user_id = "+user
+				+" AND Risposte.owner_user_id is NOT NULL "
+				+" ORDER BY Ris" 
+				+" LIMIT "+limit)
+				
+				.setUseLegacySql(false).build();
+		
+		// Create a job ID so that we can safely retry.
+				JobId jobId = JobId.of(UUID.randomUUID().toString());
+				Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build());
+
+				// Wait for the query to complete.
+				queryJob = queryJob.waitFor();
+
+				// Check for errors
+				if (queryJob == null) {
+					throw new RuntimeException("Job no longer exists");
+				} else if (queryJob.getStatus().getError() != null) {
+					// You can also look at queryJob.getStatus().getExecutionErrors() for all
+					// errors, not just the latest one.
+					throw new RuntimeException(queryJob.getStatus().getError().toString());
+				}
+				return queryJob;
+	}
+	
+
 
 
 	public List<Long[]> getResults(final Job queryJob, int query) throws JobException, InterruptedException {
@@ -187,16 +219,18 @@ public final class SOQuery implements ISOQuery {
 	        TableResult result = queryJob.getQueryResults();
 	        if (query<4) {
 	        	for (FieldValueList row : result.getValues()) {
-
+					d++;
 		            Long[] UserID= {row.get("User").getLongValue()};
-		            System.out.printf("#%d User: %d%n", ++d, UserID);
+		            System.out.println("#"+d+" User: "+UserID[0]);
+		            
 		            results.add(UserID);
 	        	}
 	        }
 	        else {
         			for (FieldValueList row : result.getValues()) {
+        				d++;
         				Long[] valori= {row.get("Ris").getLongValue(), row.get("Dom").getLongValue()};
-        				System.out.printf("#%d from:%d to: %d%n", ++d, valori[0], valori[1]);
+        				System.out.println("#"+d+" from:"+valori[0]+" to:"+valori[1]);
         				results.add(valori);
         			}
 	        }
