@@ -26,8 +26,9 @@ public interface ISOQuery {
 	 * @throws JobException Generic error occurred.
 	 * @throws InterruptedException Raised on timeouts.
 	 */
-	List<Long> getResults(Job job, int query, int col) throws JobException, InterruptedException;
-	//List<Long> getResults2col(Job queryJob) throws JobException, InterruptedException;
+
+	List<Long[]> getResults(Job job, int query) throws JobException, InterruptedException;
+
 }
 
 

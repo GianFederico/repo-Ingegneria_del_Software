@@ -178,36 +178,27 @@ public final class SOQuery implements ISOQuery {
 				return queryJob;
 	}
 
-	public List<Long> getResults(final Job queryJob, int query, int col) throws JobException, InterruptedException {
+
+	public List<Long[]> getResults(final Job queryJob, int query) throws JobException, InterruptedException {
 	    
-	    List<Long> results = new ArrayList<>();
+	    List<Long[]> results = new ArrayList<>();
 	    if (queryJob != null) {
 	    	int d=0;
 	        TableResult result = queryJob.getQueryResults();
 	        if (query<4) {
 	        	for (FieldValueList row : result.getValues()) {
-		            Long UserID=row.get("User").getLongValue();
+
+		            Long[] UserID= {row.get("User").getLongValue()};
 		            System.out.printf("#%d User: %d%n", ++d, UserID);
 		            results.add(UserID);
 	        	}
 	        }
 	        else {
-	        	switch (col) {
-	        	case 1:
-	        			for (FieldValueList row : result.getValues()) {
-	        				Long from=row.get("Ris").getLongValue();
-	        				results.add(from);
-	        			}
-	        			break;
-	        		case 2:
-	        			d=0;
-	    		   	    for (FieldValueList row : result.getValues()) {
-	    		   	    	Long to=row.get("Dom").getLongValue();
-	    		   	    	System.out.printf("#%d from:%d to: %d%n", ++d, row.get("Ris").getLongValue(), to);
-	    		   	    	results.add(to);
-	    		   	    }
-	    		   	    break;
-	        	}
+        			for (FieldValueList row : result.getValues()) {
+        				Long[] valori= {row.get("Ris").getLongValue(), row.get("Dom").getLongValue()};
+        				System.out.printf("#%d from:%d to: %d%n", ++d, valori[0], valori[1]);
+        				results.add(valori);
+        			}
 	        }
 	   }
 	    return results;

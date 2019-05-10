@@ -141,87 +141,66 @@ public class GoogleDocsUtils {
 		System.out.println(response);
 	}
 
+
+	
+	public void writeRequest(List<CellData> values, final String spid, int rowIndex) throws IOException  {
+		List<Request> requests = new ArrayList<>();
+
+		requests.add(new Request().setUpdateCells(
+				new UpdateCellsRequest().setStart(new GridCoordinate().setSheetId(0).setRowIndex(rowIndex)
+						.setColumnIndex(0))
+						.setRows(Arrays.asList(new RowData().setValues(values)))
+						.setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
+		BatchUpdateSpreadsheetRequest batchUpdateRequest =
+				new BatchUpdateSpreadsheetRequest().setRequests(requests);
+		sheetsService.spreadsheets().batchUpdate(spid, batchUpdateRequest).execute();
+	}
+	
+	
 	/**
 	 * Write results to the spreadsheet. Also, see <a href="https://developers.google.com/sheets/api/guides/values">here</a>.
 	 * @param spid The spreadsheet id.
 	 * @param res The hash map of the results, with URL as key and view count as value.
 	 * @throws IOException Generic I/O error.
-	 */
-	public void writeSheet(final String spid, final List<Long> res,final List<Long> res2, int limit) throws IOException {
-		List<Request> requests = new ArrayList<>();
+	 */	
+	public void writeSheet(final String spid, final List<Long[]> res, int limit, int query) throws IOException {
 		List<CellData> values = new ArrayList<>();
-
-		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("from")));
-		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("to")));
-		requests.add(new Request().setUpdateCells(
-				new UpdateCellsRequest().setStart(new GridCoordinate().setSheetId(0).setRowIndex(0)
-						.setColumnIndex(0))
-						.setRows(Arrays.asList(new RowData().setValues(values)))
-						.setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
-		BatchUpdateSpreadsheetRequest batchUpdateRequest =
-				new BatchUpdateSpreadsheetRequest().setRequests(requests);
-		sheetsService.spreadsheets().batchUpdate(spid, batchUpdateRequest).execute();
-
-
+		String[] colonne= {"","to","weight"};
+		int rowIndex=0;
+        if(query<4) {
+            colonne[0]="owner_user_id";
+            values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[0])));
+        }else {
+        	colonne[0]="from";
+            values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[0])));
+            values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[1])));
+        }
+        writeRequest(values, spid, rowIndex);
 		if (null != res) {
-			int rowIndex = 1;
-			for(int i=0;i<limit;i++) {
-				requests = new ArrayList<>();
-				values = new ArrayList<>();
-				Long from=res.get(i);
-				values.add(new CellData()
-						.setUserEnteredValue(new ExtendedValue().setStringValue(String.valueOf(from))));//.setNumberValue(from)));
-				Long to=res2.get(i);
-				values.add(
-						new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(String.valueOf(to))));
-				requests.add(new Request().setUpdateCells(new UpdateCellsRequest()
-						.setStart(new GridCoordinate()
-								.setSheetId(0)
-								.setRowIndex(rowIndex)
-								.setColumnIndex(0))
-						.setRows(Arrays.asList(new RowData().setValues(values)))
-						.setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
-					
-				batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
-				sheetsService.spreadsheets().batchUpdate(spid, batchUpdateRequest).execute();
-				rowIndex++;
+
+			rowIndex = 1;
+			if (query<4) {
+				for(int i=0;i<limit;i++) {
+					values = new ArrayList<>();
+					Long[] UserID=res.get(i);
+					values.add(
+							new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(String.valueOf(UserID[0]))));
+					writeRequest(values, spid, rowIndex);
+					rowIndex++;
 				}
-		}
-	}
-	
-	
-	public void writeSheet(final String spid, final List<Long> res, int limit) throws IOException {
-		List<Request> requests = new ArrayList<>();
-		List<CellData> values = new ArrayList<>();
-		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("owner_user_id")));
-		requests.add(new Request().setUpdateCells(
-				new UpdateCellsRequest().setStart(new GridCoordinate().setSheetId(0).setRowIndex(0)
-						.setColumnIndex(0))
-						.setRows(Arrays.asList(new RowData().setValues(values)))
-						.setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
-		BatchUpdateSpreadsheetRequest batchUpdateRequest =
-				new BatchUpdateSpreadsheetRequest().setRequests(requests);
-		sheetsService.spreadsheets().batchUpdate(spid, batchUpdateRequest).execute();
-		
-		if (null != res) {
-			int rowIndex = 1;
-			for(int i=0;i<limit;i++) {
-				requests = new ArrayList<>();
-				values = new ArrayList<>();
-				Long UserID=res.get(i);
-				values.add(
-						new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(String.valueOf(UserID))));
-				requests.add(new Request().setUpdateCells(new UpdateCellsRequest()
-						.setStart(new GridCoordinate()
-								.setSheetId(0)
-								.setRowIndex(rowIndex)
-								.setColumnIndex(0))
-						.setRows(Arrays.asList(new RowData().setValues(values)))
-						.setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
-				
-				batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
-				sheetsService.spreadsheets().batchUpdate(spid, batchUpdateRequest).execute();
-				rowIndex++;
+			}else {
+				for(int i=0;i<limit;i++) {
+					values = new ArrayList<>();
+					Long[] valori=res.get(i);
+					values.add(
+							new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(String.valueOf(valori[0]))));
+					values.add(
+							new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(String.valueOf(valori[1]))));
+					writeRequest(values, spid, rowIndex);
+					rowIndex++;
+					
+				}
+
 			}
 		}
 	}

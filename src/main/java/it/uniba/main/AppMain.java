@@ -49,7 +49,8 @@ public final class AppMain {
 		String spid="";
 		String[] type= {"",""};
         int query=0;
-        //String[] prova= {"yyyy=2016", "mm=02", "dd=11", "type=question", "edge=no", "limit=100"};        
+        //String[] prova= {"yyyy=2016", "mm=02", "dd=11", "type=question", "edge=yes", "limit=100"};        
+
         
 		if (args.length > 0) {
 			switch (args[3]) {
@@ -163,15 +164,12 @@ public final class AppMain {
 				
 		}
 		
-		List<Long> res= soq.getResults(job, query, 1);
+
+		List<Long[]> res= soq.getResults(job, query);
 		ut.shareSheet(spid);
 		ut.getSheetByTitle(spid);
-		if (query<4) {
-			ut.writeSheet(spid, res, Integer.parseInt(limit));
-		}else {
-			List<Long> res2= soq.getResults(job, query, 2);
-			ut.writeSheet(spid, res, res2, Integer.parseInt(limit));
-		}
+		ut.writeSheet(spid, res, Integer.parseInt(limit), query);
+
 		System.exit(0);
 		
 
