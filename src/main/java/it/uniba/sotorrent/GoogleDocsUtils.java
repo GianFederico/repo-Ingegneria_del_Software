@@ -141,9 +141,11 @@ public class GoogleDocsUtils {
 		System.out.println(response);
 	}
 
+
 	
 	public void writeRequest(List<CellData> values, final String spid, int rowIndex) throws IOException  {
 		List<Request> requests = new ArrayList<>();
+
 		requests.add(new Request().setUpdateCells(
 				new UpdateCellsRequest().setStart(new GridCoordinate().setSheetId(0).setRowIndex(rowIndex)
 						.setColumnIndex(0))
@@ -175,6 +177,7 @@ public class GoogleDocsUtils {
         }
         writeRequest(values, spid, rowIndex);
 		if (null != res) {
+
 			rowIndex = 1;
 			if (query<4) {
 				for(int i=0;i<limit;i++) {
@@ -197,6 +200,7 @@ public class GoogleDocsUtils {
 					rowIndex++;
 					
 				}
+
 			}
 		}
 	}

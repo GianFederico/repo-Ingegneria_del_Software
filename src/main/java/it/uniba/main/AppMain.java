@@ -50,6 +50,7 @@ public final class AppMain {
 		String[] type= {"",""};
         int query=0;
         //String[] prova= {"yyyy=2016", "mm=02", "dd=11", "type=question", "edge=yes", "limit=100"};        
+
         
 		if (args.length > 0) {
 			switch (args[3]) {
@@ -163,10 +164,12 @@ public final class AppMain {
 				
 		}
 		
+
 		List<Long[]> res= soq.getResults(job, query);
 		ut.shareSheet(spid);
 		ut.getSheetByTitle(spid);
 		ut.writeSheet(spid, res, Integer.parseInt(limit), query);
+
 		System.exit(0);
 		
 

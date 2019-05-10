@@ -1,6 +1,9 @@
 /**
  * 
  */
+/**
+ * 
+ */
 package it.uniba.sotorrent;
 
 import java.io.FileNotFoundException;
@@ -175,6 +178,7 @@ public final class SOQuery implements ISOQuery {
 				return queryJob;
 	}
 
+
 	public List<Long[]> getResults(final Job queryJob, int query) throws JobException, InterruptedException {
 	    
 	    List<Long[]> results = new ArrayList<>();
@@ -183,6 +187,7 @@ public final class SOQuery implements ISOQuery {
 	        TableResult result = queryJob.getQueryResults();
 	        if (query<4) {
 	        	for (FieldValueList row : result.getValues()) {
+
 		            Long[] UserID= {row.get("User").getLongValue()};
 		            System.out.printf("#%d User: %d%n", ++d, UserID);
 		            results.add(UserID);
