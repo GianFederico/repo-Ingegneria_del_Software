@@ -1,14 +1,19 @@
 /**
  * 
  */
+/**
+ * 
+ */
 package it.uniba.sotorrent;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+//import java.util.HashMap;
+//import java.util.Map;
 import java.util.UUID;
+import java.util.List;
 
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.bigquery.BigQuery;
@@ -43,9 +48,8 @@ public final class SOQuery implements ISOQuery {
 				.getService();
 	}
 
-	
 	@Override
-	public Job runQuery1to3S1(String yyyy, String mm, String dd, String[] type, String limit) throws InterruptedException {
+	public Job runQuerySprint1(String yyyy, String mm, String dd, String[] type, String limit) throws InterruptedException {
 		// Use standard SQL syntax for queries.
 		// See: https://cloud.google.com/bigquery/sql-reference/
 
@@ -92,8 +96,9 @@ public final class SOQuery implements ISOQuery {
 		}
 		return queryJob;
 	}
+	
 	@Override
-	public Job runQuery4to6S1(String yyyy, String mm, String[] type, String taglike, String limit) throws InterruptedException {
+	public Job runQuerySprint1(String yyyy, String mm, String[] type, String taglike, String limit) throws InterruptedException {
 		
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(
 				 "(SELECT DISTINCT owner_user_id as User "
@@ -173,37 +178,39 @@ public final class SOQuery implements ISOQuery {
 				return queryJob;
 	}
 
-	
-	@Override
-	public Map<Double, Double> getResults(final Job queryJob, int query) throws JobException, InterruptedException {
-		Map<Double, Double> results = new HashMap<Double, Double>();
+	public List<Long> getResults(final Job queryJob, int query, int col) throws JobException, InterruptedException {
+	    
+	    List<Long> results = new ArrayList<>();
+	    if (queryJob != null) {
+	    	int d=0;
+	        TableResult result = queryJob.getQueryResults();
+	        if (query<4) {
+	        	for (FieldValueList row : result.getValues()) {
+		            Long UserID=row.get("User").getLongValue();
+		            System.out.printf("#%d User: %d%n", ++d, UserID);
+		            results.add(UserID);
+	        	}
+	        }
+	        else {
+	        	switch (col) {
+	        	case 1:
+	        			for (FieldValueList row : result.getValues()) {
+	        				Long from=row.get("Ris").getLongValue();
+	        				results.add(from);
+	        			}
+	        			break;
+	        		case 2:
+	        			d=0;
+	    		   	    for (FieldValueList row : result.getValues()) {
+	    		   	    	Long to=row.get("Dom").getLongValue();
+	    		   	    	System.out.printf("#%d from:%d to: %d%n", ++d, row.get("Ris").getLongValue(), to);
+	    		   	    	results.add(to);
+	    		   	    }
+	    		   	    break;
+	        	}
+	        }
+	   }
+	    return results;
+	}
 
-		if (queryJob != null) {
-			TableResult result = queryJob.getQueryResults();
-			
-			if (query>3) {
-				int i=0;
-				// Print all pages of the results.
-				for (FieldValueList row : result.iterateAll()) {
-					i++;
-					Long d=(long)i;
-					Double from=row.get("Ris").getDoubleValue();
-					Double to=row.get("Dom").getDoubleValue();
-					System.out.printf("#%d from:%.0f to: %.0f%n", d, from, to);
-					results.put(from, to);
-			}
-				}else {
-			Double d=0.0;
-			// Print all pages of the results.
-			for (FieldValueList row : result.iterateAll()) {
-				d++;
-				Double UserID=row.get("User").getDoubleValue();
-				System.out.printf("#%.0f User: %.0f%n", d, UserID);
-				results.put(d, UserID);
-			}
-			}
-		}
-		return results;
-
-}
 }
