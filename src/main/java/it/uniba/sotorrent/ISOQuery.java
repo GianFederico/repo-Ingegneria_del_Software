@@ -2,8 +2,8 @@ package it.uniba.sotorrent;
 
 import com.google.cloud.bigquery.JobException;
 
-import java.util.Map;
-
+//import java.util.Map;
+import java.util.List;
 import com.google.cloud.bigquery.Job;
 
 /**
@@ -15,10 +15,10 @@ public interface ISOQuery {
 	 * Starts the query.
 	 * @return The job for the query.
 	 * @throws InterruptedException Raised on timeouts.
-	 */
-	Job runQuery(String yyyy, String mm, String dd, String[] type, String limit) throws InterruptedException;
-	Job runQuery2(String yyyy, String mm, String[] type, String taglike, String limit) throws InterruptedException;
-	
+	*/
+	Job runQuerySprint1(String yyyy, String mm, String dd, String[] type, String limit) throws InterruptedException;
+	Job runQuerySprint1(String yyyy, String mm, String[] type, String taglike, String limit) throws InterruptedException;
+	Job runQuery1to3S2(String yyyy, String mm, String dd, String limit) throws InterruptedException;
 	/**
 	 * Returns the results from the query job.
 	 * @param job The job associated to the query.
@@ -26,6 +26,8 @@ public interface ISOQuery {
 	 * @throws JobException Generic error occurred.
 	 * @throws InterruptedException Raised on timeouts.
 	 */
-	Map<Long, Double> getResults(Job job) throws JobException, InterruptedException;
-
+	List<Long> getResults(Job job, int query, int col) throws JobException, InterruptedException;
+	//List<Long> getResults2col(Job queryJob) throws JobException, InterruptedException;
 }
+
+

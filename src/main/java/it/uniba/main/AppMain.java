@@ -4,7 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
-import java.util.Map;
+//import java.util.Map;
+import java.util.List;
 
 import com.google.cloud.bigquery.Job;
 
@@ -48,15 +49,34 @@ public final class AppMain {
 		String spid="";
 		String[] type= {"",""};
         int query=0;
-                
+        //String[] prova= {"yyyy=2016", "mm=02", "dd=11", "type=question", "edge=no", "limit=100"};        
+        
 		if (args.length > 0) {
 			switch (args[3]) {
 			case "type=question":
-				System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
-				type[0]="1";
-				type[1]="1";
-				query=1;
-				spid = ut.createSheet("Sprint 1 hopcroft - User Story 1");
+				switch ((args[4].split("=")[0])){
+					case "edge":
+						if (((args[4].split("="))[1]).equals("yes")){
+							System.out.println("Visualizzare la lista delle prime 100 coppie (from, to) relative a domande (Question) poste in un "
+								+	"dato anno, mese e giorno");
+							query=4;
+							spid = ut.createSheet("Sprint 2 hopcroft - User Story 1");
+							}
+						else {
+							query=3;
+							System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
+							type[0]="1";
+							type[1]="1";
+							spid = ut.createSheet("Sprint 1 hopcroft - User Story 1");
+							}
+						break;
+					case "limit":
+						System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
+						type[0]="1";
+						type[1]="1";
+						query=1;
+						spid = ut.createSheet("Sprint 1 hopcroft - User Story 1");
+						break;}
 				break;
 
 			case "type=answer":
@@ -102,32 +122,58 @@ public final class AppMain {
 						spid = ut.createSheet("Sprint 1 hopcroft - User Story 6");
 						break;
 					}
-				} else {System.out.println("Inserire dati in formato yyyy=____ mm=__ dd=__ type=________ limit=___ \n oppure yyyy=____ mm=__ type=________ taglike=____ limit=___");
+				} else {System.out.println("Inserire dati in formato yyyy=____ mm=__ dd=__ type=________ limit=___ \n oppure yyyy=____ mm=__ type=________ taglike=____ limit=___ "
+						+"\n oppure yyyy=____ mm=__ dd=__ type=________ edge=___ limit=___");
 					System.exit(0);
 					}
 			}
-		} else {System.out.println("Inserire dati in formato yyyy=____ mm=__ dd=__ type=________ limit=___ \n oppure yyyy=____ mm=__ type=________ taglike=____ limit=___");
+		} else {System.out.println("Inserire dati in formato yyyy=____ mm=__ dd=__ type=________ limit=___ \n oppure yyyy=____ mm=__ type=________ taglike=____ limit=___ "
+				+"\n oppure yyyy=____ mm=__ dd=__ type=________ edge=___ limit=___");
 				System.exit(0);
 			}
 		
 		String yyyy=(args[0].split("="))[1];
 		String mm=(args[1].split("="))[1];
-		String limit=(args[4].split("="))[1];
+		String dd="";
 		ISOQuery soq = new SOQuery();
 		Job job = null;
 		String taglike="";
-		if(query==1) {
-			String dd=(args[2].split("="))[1];
-			job = soq.runQuery(yyyy, mm, dd, type, limit);
-		}else{
-			taglike=(args[3].split("="))[1];
-			job = soq.runQuery2(yyyy, mm, type, taglike, limit);
+		String limit="";
+		switch (query) {
+			case 1:
+				limit=(args[4].split("="))[1];
+				dd=(args[2].split("="))[1];
+				job = soq.runQuerySprint1(yyyy, mm, dd, type, limit);
+				break;
+			case 2:
+				limit=(args[4].split("="))[1];
+				taglike=(args[3].split("="))[1];
+				job = soq.runQuerySprint1(yyyy, mm, type, taglike, limit);
+				break;
+			case 3:
+				limit=(args[5].split("="))[1];
+				dd=(args[2].split("="))[1];
+				job = soq.runQuerySprint1(yyyy, mm, dd, type, limit);
+				break;
+			case 4:
+				limit=(args[5].split("="))[1];
+				dd=(args[2].split("="))[1];
+				job = soq.runQuery1to3S2(yyyy, mm, dd, limit);
+				break;
+				
 		}
-		Map<Long, Double> res = soq.getResults(job);
+		
+		List<Long> res= soq.getResults(job, query, 1);
 		ut.shareSheet(spid);
 		ut.getSheetByTitle(spid);
-		ut.writeSheet(spid, res);
+		if (query<4) {
+			ut.writeSheet(spid, res, Integer.parseInt(limit));
+		}else {
+			List<Long> res2= soq.getResults(job, query, 2);
+			ut.writeSheet(spid, res, res2, Integer.parseInt(limit));
+		}
 		System.exit(0);
+		
 
 	}
 

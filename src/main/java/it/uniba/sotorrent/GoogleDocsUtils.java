@@ -7,7 +7,7 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+//import java.util.Map;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
@@ -147,18 +147,17 @@ public class GoogleDocsUtils {
 	 * @param res The hash map of the results, with URL as key and view count as value.
 	 * @throws IOException Generic I/O error.
 	 */
-	public void writeSheet(final String spid, final Map<Long, Double> res) throws IOException {
+	public void writeSheet(final String spid, final List<Long> res,final List<Long> res2, int limit) throws IOException {
 		List<Request> requests = new ArrayList<>();
 		List<CellData> values = new ArrayList<>();
 
-		//values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("Row")));
-		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("owner_user_id")));
+		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("from")));
+		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("to")));
 		requests.add(new Request().setUpdateCells(
 				new UpdateCellsRequest().setStart(new GridCoordinate().setSheetId(0).setRowIndex(0)
 						.setColumnIndex(0))
 						.setRows(Arrays.asList(new RowData().setValues(values)))
 						.setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
-
 		BatchUpdateSpreadsheetRequest batchUpdateRequest =
 				new BatchUpdateSpreadsheetRequest().setRequests(requests);
 		sheetsService.spreadsheets().batchUpdate(spid, batchUpdateRequest).execute();
@@ -166,14 +165,15 @@ public class GoogleDocsUtils {
 
 		if (null != res) {
 			int rowIndex = 1;
-			for (Map.Entry<Long, Double> entry : res.entrySet()) {
+			for(int i=0;i<limit;i++) {
 				requests = new ArrayList<>();
 				values = new ArrayList<>();
-				//values.add(new CellData()
-						//.setUserEnteredValue(new ExtendedValue().setStringValue(String.valueOf(rowIndex))));
-				Double UserID = entry.getValue();
+				Long from=res.get(i);
+				values.add(new CellData()
+						.setUserEnteredValue(new ExtendedValue().setStringValue(String.valueOf(from))));//.setNumberValue(from)));
+				Long to=res2.get(i);
 				values.add(
-						new CellData().setUserEnteredValue(new ExtendedValue().setNumberValue(UserID)));
+						new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(String.valueOf(to))));
 				requests.add(new Request().setUpdateCells(new UpdateCellsRequest()
 						.setStart(new GridCoordinate()
 								.setSheetId(0)
@@ -181,10 +181,46 @@ public class GoogleDocsUtils {
 								.setColumnIndex(0))
 						.setRows(Arrays.asList(new RowData().setValues(values)))
 						.setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
-
+					
 				batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
 				sheetsService.spreadsheets().batchUpdate(spid, batchUpdateRequest).execute();
-
+				rowIndex++;
+				}
+		}
+	}
+	
+	
+	public void writeSheet(final String spid, final List<Long> res, int limit) throws IOException {
+		List<Request> requests = new ArrayList<>();
+		List<CellData> values = new ArrayList<>();
+		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue("owner_user_id")));
+		requests.add(new Request().setUpdateCells(
+				new UpdateCellsRequest().setStart(new GridCoordinate().setSheetId(0).setRowIndex(0)
+						.setColumnIndex(0))
+						.setRows(Arrays.asList(new RowData().setValues(values)))
+						.setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
+		BatchUpdateSpreadsheetRequest batchUpdateRequest =
+				new BatchUpdateSpreadsheetRequest().setRequests(requests);
+		sheetsService.spreadsheets().batchUpdate(spid, batchUpdateRequest).execute();
+		
+		if (null != res) {
+			int rowIndex = 1;
+			for(int i=0;i<limit;i++) {
+				requests = new ArrayList<>();
+				values = new ArrayList<>();
+				Long UserID=res.get(i);
+				values.add(
+						new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(String.valueOf(UserID))));
+				requests.add(new Request().setUpdateCells(new UpdateCellsRequest()
+						.setStart(new GridCoordinate()
+								.setSheetId(0)
+								.setRowIndex(rowIndex)
+								.setColumnIndex(0))
+						.setRows(Arrays.asList(new RowData().setValues(values)))
+						.setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
+				
+				batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
+				sheetsService.spreadsheets().batchUpdate(spid, batchUpdateRequest).execute();
 				rowIndex++;
 			}
 		}

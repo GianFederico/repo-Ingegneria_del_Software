@@ -1,14 +1,19 @@
 /**
  * 
  */
+/**
+ * 
+ */
 package it.uniba.sotorrent;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+//import java.util.HashMap;
+//import java.util.Map;
 import java.util.UUID;
+import java.util.List;
 
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.bigquery.BigQuery;
@@ -43,9 +48,8 @@ public final class SOQuery implements ISOQuery {
 				.getService();
 	}
 
-	
 	@Override
-	public Job runQuery(String yyyy, String mm, String dd, String[] type, String limit) throws InterruptedException {
+	public Job runQuerySprint1(String yyyy, String mm, String dd, String[] type, String limit) throws InterruptedException {
 		// Use standard SQL syntax for queries.
 		// See: https://cloud.google.com/bigquery/sql-reference/
 
@@ -92,8 +96,9 @@ public final class SOQuery implements ISOQuery {
 		}
 		return queryJob;
 	}
+	
 	@Override
-	public Job runQuery2(String yyyy, String mm, String[] type, String taglike, String limit) throws InterruptedException {
+	public Job runQuerySprint1(String yyyy, String mm, String[] type, String taglike, String limit) throws InterruptedException {
 		
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(
 				 "(SELECT DISTINCT owner_user_id as User "
@@ -138,25 +143,74 @@ public final class SOQuery implements ISOQuery {
 				}
 				return queryJob;
 	}
-
 	
 	@Override
-	public Map<Long, Double> getResults(final Job queryJob) throws JobException, InterruptedException {
-		Map<Long, Double> results = new HashMap<Long, Double>();
+	public Job runQuery1to3S2(String yyyy, String mm, String dd, String limit) throws InterruptedException{
 
-		if (queryJob != null) {
-			TableResult result = queryJob.getQueryResults();
-			int i=0;
-			// Print all pages of the results.
-			for (FieldValueList row : result.iterateAll()) {
-				i++;
-				Long d=(long)i;
-				Double UserID=row.get("User").getDoubleValue();
-				System.out.printf("#%d User: %.0f%n", d, UserID);
-				results.put(d, UserID);
-			}
-		}
-		return results;
+		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder("SELECT Risposte.owner_user_id as Ris, Domande.owner_user_id as Dom " 
+				+"FROM `bigquery-public-data.stackoverflow.posts_questions` as Domande " 
+				+"INNER JOIN `bigquery-public-data.stackoverflow.posts_answers` as Risposte ON Domande.id = Risposte.parent_id " 
+				+"WHERE Risposte.owner_user_id is NOT NULL "
+				+"AND Domande.owner_user_id is NOT NULL "
+				+"AND extract(year from Domande.creation_date)="+yyyy
+				+" AND extract(month from Domande.creation_date)="+mm
+				+" AND extract(day from Domande.creation_date)="+dd
+				+" ORDER BY Ris, Dom" 
+				+" LIMIT "+limit)
+				
+				.setUseLegacySql(false).build();
+		
+		// Create a job ID so that we can safely retry.
+				JobId jobId = JobId.of(UUID.randomUUID().toString());
+				Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build());
 
-}
+				// Wait for the query to complete.
+				queryJob = queryJob.waitFor();
+
+				// Check for errors
+				if (queryJob == null) {
+					throw new RuntimeException("Job no longer exists");
+				} else if (queryJob.getStatus().getError() != null) {
+					// You can also look at queryJob.getStatus().getExecutionErrors() for all
+					// errors, not just the latest one.
+					throw new RuntimeException(queryJob.getStatus().getError().toString());
+				}
+				return queryJob;
+	}
+
+	public List<Long> getResults(final Job queryJob, int query, int col) throws JobException, InterruptedException {
+	    
+	    List<Long> results = new ArrayList<>();
+	    if (queryJob != null) {
+	    	int d=0;
+	        TableResult result = queryJob.getQueryResults();
+	        if (query<4) {
+	        	for (FieldValueList row : result.getValues()) {
+		            Long UserID=row.get("User").getLongValue();
+		            System.out.printf("#%d User: %d%n", ++d, UserID);
+		            results.add(UserID);
+	        	}
+	        }
+	        else {
+	        	switch (col) {
+	        	case 1:
+	        			for (FieldValueList row : result.getValues()) {
+	        				Long from=row.get("Ris").getLongValue();
+	        				results.add(from);
+	        			}
+	        			break;
+	        		case 2:
+	        			d=0;
+	    		   	    for (FieldValueList row : result.getValues()) {
+	    		   	    	Long to=row.get("Dom").getLongValue();
+	    		   	    	System.out.printf("#%d from:%d to: %d%n", ++d, row.get("Ris").getLongValue(), to);
+	    		   	    	results.add(to);
+	    		   	    }
+	    		   	    break;
+	        	}
+	        }
+	   }
+	    return results;
+	}
+
 }
