@@ -183,7 +183,7 @@ public class GoogleDocsUtils {
 	        	values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[1])));
 	        break;
 	        
-	        case 6:
+	        case 6: case 7:
 
 	        	colonne[0]="from";
 	        	values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[0])));
@@ -226,7 +226,7 @@ public class GoogleDocsUtils {
 				}
 				break;
 
-        	case 6:
+        	case 6: case 7:
 
         		for(int i=0;i<res.size();i++) {
 					values = new ArrayList<>();

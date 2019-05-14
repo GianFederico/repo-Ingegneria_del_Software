@@ -48,19 +48,19 @@ public final class AppMain {
 		GoogleDocsUtils ut = new GoogleDocsUtils();
 		String spid="";
 		String[] type= {"",""};
-    int query=0;
-    boolean edge=false;
-    boolean weight=false;
-    String yyyy="";
-    String mm="";
-    String dd="";
-    String tipo="";
-    String taglike="";
-    String limit="";
+	    int query=0;
+	    boolean edge=false;
+	    boolean weight=false;
+	    String yyyy="";
+	    String mm="";
+	    String dd="";
+	    String tipo="";
+	    String taglike="";
+	    String limit="";
 		String groupby="";
 		String column3="";
 		String user="";
-        //String[] prova={"yyyy=2016", "mm=02", "dd=11", "type=question", "edge=yes", "weight=no", "limit=100"};    
+        //String[] prova={"user=1109", "type=question", "edge=yes", "weight=yes", "limit=100"};    
 		if (args.length > 0) {
 			for (int i=0;i<args.length;i++) {
 				switch ((args[i].split("="))[0]) {
@@ -123,7 +123,6 @@ public final class AppMain {
 					break;
 					case "taglike":
 						taglike=((args[i].split("="))[1]);
-
 						break;
 					case "user":
 						user=((args[i].split("="))[1]);
@@ -137,8 +136,7 @@ public final class AppMain {
 								+ " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s))  edge=(yes or no)  weight=(yes or no)  limit=100");
 						System.exit(0);
 					break;
-				}
-				
+				}				
 			}
 		} else {
 			System.out.println("Formato non corretto! \n Inserire dati in formato:\n"
@@ -219,27 +217,30 @@ public final class AppMain {
 		}
 		
 		if (edge && weight) {
+			groupby=" GROUP BY Risposte.owner_user_id, Domande.owner_user_id";
+			column3=", COUNT (*) AS weight";
 			switch (tipo) {
 			case "question": case "questions":
 				if (user.equals("")) {
 					System.out.println("Visualizzare la lista delle prime 100 triple (from, to, weight) relative a domande (Question) poste " + 
 							"in un dato anno, mese e giorno");
-					query=6;
-					groupby=" GROUP BY Risposte.owner_user_id, Domande.owner_user_id";
-					column3=", COUNT (*) AS weight";
+					query=6;					
 					spid = ut.createSheet("Sprint 2 hopcroft - User Story 4");
-				}//else {
-				
-				//}
+				}else {
+					System.out.println("Visualizzare la lista delle prime 100 triple (from, to, weight) relative a domande (Question) poste " + 
+							"da un determinato utente");
+					query=7;					
+					spid = ut.createSheet("Sprint 2 hopcroft - User Story 5");
+				}
 				break;
 			case "answer": case "answers":
 			
 				break;
-		}
+		 }
 		}
 		
 		if (!edge && weight) {
-			System.out.println("Se il valore di 'weight' è 'yes', il valore di edge deve essere necessariamente 'yes'!");
+			System.out.println("Se il valore di 'weight' e' 'yes', il valore di edge deve essere necessariamente 'yes'!");
 			System.exit(0);
 		}
 		//fine Sprint 2
@@ -255,21 +256,17 @@ public final class AppMain {
 			case 2:
 				job = soq.runQuerySprint1(yyyy, mm, type, taglike, limit);
 				break;
-			case 3:
+			case 3: case 6:
 
 				job = soq.runQuerySprint2(yyyy, mm, dd, limit, groupby, column3);
 				break;
-			case 4:
+			case 4: case 7:
 
-				job = soq.runQuerySprint2(user, limit, "Ris", "Domande", "Risposte");
+				job = soq.runQuerySprint2(user, limit, "Ris", "Domande", "Risposte", groupby, column3);
 				break;
 			case 5:
-				job = soq.runQuerySprint2(user, limit, "Dom", "Risposte", "Domande");
+				job = soq.runQuerySprint2(user, limit, "Dom", "Risposte", "Domande", groupby, column3);
 				break;
-
-			case 6:
-				job = soq.runQuerySprint2(yyyy, mm, dd, limit, groupby, column3);
-
 		}
 		
 
@@ -281,5 +278,4 @@ public final class AppMain {
 		
 
 	}
-
 }
