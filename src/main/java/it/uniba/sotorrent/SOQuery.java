@@ -182,12 +182,13 @@ public final class SOQuery implements ISOQuery {
 	}
 	
 	@Override
-	public Job runQuerySprint2(String user, String limit, String order, String where, String nnull) throws InterruptedException{
-		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder("SELECT distinct Risposte.owner_user_id as Ris, Domande.owner_user_id as Dom " 
-				+"FROM `bigquery-public-data.stackoverflow.posts_questions` as Domande " 
+	public Job runQuerySprint2(String user, String limit, String order, String where, String nnull, String groupby, String column3) throws InterruptedException{
+		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder("SELECT distinct Risposte.owner_user_id as Ris, Domande.owner_user_id as Dom " +column3 
+				+" FROM `bigquery-public-data.stackoverflow.posts_questions` as Domande " 
 				+"INNER JOIN `bigquery-public-data.stackoverflow.posts_answers` as Risposte ON Domande.id = Risposte.parent_id " 
 				+"WHERE "+where+".owner_user_id = "+user
 				+" AND "+nnull+".owner_user_id is NOT NULL "
+				+groupby
 				+" ORDER BY "+order 
 				+" LIMIT "+limit)
 				
@@ -242,7 +243,7 @@ public final class SOQuery implements ISOQuery {
         		}
         		break;
 
-	         case 6:
+	         case 6: case 7:
 
 	        	 for (FieldValueList row : result.getValues()) {
      				d++;
