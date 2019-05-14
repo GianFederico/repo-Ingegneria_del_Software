@@ -243,7 +243,7 @@ public final class SOQuery implements ISOQuery {
         		}
         		break;
 
-	         case 6: case 7:
+	         case 6: case 7: case 8:
 
 	        	 for (FieldValueList row : result.getValues()) {
      				d++;
