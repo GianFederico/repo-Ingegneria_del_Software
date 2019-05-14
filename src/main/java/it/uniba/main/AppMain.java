@@ -60,7 +60,7 @@ public final class AppMain {
 		String groupby="";
 		String column3="";
 		String user="";
-        //String[] prova={"user=1109", "type=question", "edge=yes", "weight=yes", "limit=100"};    
+           
 		if (args.length > 0) {
 			for (int i=0;i<args.length;i++) {
 				switch ((args[i].split("="))[0]) {
@@ -234,7 +234,10 @@ public final class AppMain {
 				}
 				break;
 			case "answer": case "answers":
-			
+				System.out.println("Visualizzare la lista delle prime 100 triple (from, to, weight) relative a risposte (Answer) date " + 
+						"da un determinato utente");
+					query=8;
+					spid = ut.createSheet("Sprint 2 hopcroft - User Story 6");
 				break;
 		 }
 		}
@@ -245,7 +248,14 @@ public final class AppMain {
 		}
 		//fine Sprint 2
 		
-
+		/*Valori di query: 1-->User Story 1,2 e 3 dello Sprint 1
+		 * 				   2-->User Story 4,5 e 6 dello Sprint 1
+		 * 				   3-->User Story 1 dello Sprint 2
+		 * 				   4-->User Story 2 dello Sprint 2
+		 * 				   5-->User Story 3 dello Sprint 2	 
+		 *  			   6-->User Story 4 dello Sprint 2
+		 *   			   7-->User Story 5 dello Sprint 2
+		 *   			   8-->User Story 6 dello Sprint 2	 	 	 */
 		
 		ISOQuery soq = new SOQuery();
 		Job job = null;
@@ -257,14 +267,12 @@ public final class AppMain {
 				job = soq.runQuerySprint1(yyyy, mm, type, taglike, limit);
 				break;
 			case 3: case 6:
-
 				job = soq.runQuerySprint2(yyyy, mm, dd, limit, groupby, column3);
 				break;
 			case 4: case 7:
-
 				job = soq.runQuerySprint2(user, limit, "Ris", "Domande", "Risposte", groupby, column3);
 				break;
-			case 5:
+			case 5: case 8:
 				job = soq.runQuerySprint2(user, limit, "Dom", "Risposte", "Domande", groupby, column3);
 				break;
 		}
