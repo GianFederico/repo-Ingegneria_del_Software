@@ -48,15 +48,15 @@ public final class AppMain {
 		GoogleDocsUtils ut = new GoogleDocsUtils();
 		String spid="";
 		String[] type= {"",""};
-        int query=0;
-        boolean edge=false;
-        boolean weight=false;
-        String yyyy="";
-        String mm="";
-        String dd="";
-        String tipo="";
-        String taglike="";
-        String limit="";
+    int query=0;
+    boolean edge=false;
+    boolean weight=false;
+    String yyyy="";
+    String mm="";
+    String dd="";
+    String tipo="";
+    String taglike="";
+    String limit="";
 		String groupby="";
 		String column3="";
 		String user="";
@@ -123,6 +123,7 @@ public final class AppMain {
 					break;
 					case "taglike":
 						taglike=((args[i].split("="))[1]);
+
 						break;
 					case "user":
 						user=((args[i].split("="))[1]);
@@ -238,7 +239,7 @@ public final class AppMain {
 		}
 		
 		if (!edge && weight) {
-			System.out.println("Se il valore di 'weight' è 'yes', il valore di edge deve essere necessariamente 'yes'!");
+			System.out.println("Se il valore di 'weight' Ã¨ 'yes', il valore di edge deve essere necessariamente 'yes'!");
 			System.exit(0);
 		}
 		//fine Sprint 2
@@ -255,16 +256,20 @@ public final class AppMain {
 				job = soq.runQuerySprint1(yyyy, mm, type, taglike, limit);
 				break;
 			case 3:
+
 				job = soq.runQuerySprint2(yyyy, mm, dd, limit, groupby, column3);
 				break;
 			case 4:
+
 				job = soq.runQuerySprint2(user, limit, "Ris", "Domande", "Risposte");
 				break;
 			case 5:
 				job = soq.runQuerySprint2(user, limit, "Dom", "Risposte", "Domande");
 				break;
+
 			case 6:
 				job = soq.runQuerySprint2(yyyy, mm, dd, limit, groupby, column3);
+
 		}
 		
 

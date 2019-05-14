@@ -168,18 +168,23 @@ public class GoogleDocsUtils {
 		String[] colonne= {"","to","weight"};
 		int rowIndex=0;
 		switch (query) {
+
         	case 1: case 2:
+
         		colonne[0]="owner_user_id";
         		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[0])));
             break;
             
+
         	case 3: case 4: case 5:
+
 	        	colonne[0]="from";
 	        	values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[0])));
 	        	values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[1])));
 	        break;
 	        
 	        case 6:
+
 	        	colonne[0]="from";
 	        	values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[0])));
 	        	values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[1])));
@@ -193,7 +198,9 @@ public class GoogleDocsUtils {
 
 			rowIndex = 1;
 			switch (query) {
+
         	case 1: case 2:
+
 				for(int i=0;i<res.size();i++) {
 					values = new ArrayList<>();
 					Long[] UserID=res.get(i);
@@ -203,7 +210,9 @@ public class GoogleDocsUtils {
 					rowIndex++;
 				}
 			break;
+
         	case 3: case 4: case 5:
+
 				for(int i=0;i<res.size();i++) {
 					values = new ArrayList<>();
 					Long[] valori=res.get(i);
@@ -216,7 +225,9 @@ public class GoogleDocsUtils {
 					
 				}
 				break;
+
         	case 6:
+
         		for(int i=0;i<res.size();i++) {
 					values = new ArrayList<>();
 					Long[] valori=res.get(i);

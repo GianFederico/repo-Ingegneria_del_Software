@@ -145,9 +145,11 @@ public final class SOQuery implements ISOQuery {
 	}
 	
 	@Override
+
 	public Job runQuerySprint2(String yyyy, String mm, String dd, String limit, String groupby, String column3) throws InterruptedException{
 
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder("SELECT Risposte.owner_user_id as Ris, Domande.owner_user_id as Dom" +column3
+
 				+" FROM `bigquery-public-data.stackoverflow.posts_questions` as Domande " 
 				+"INNER JOIN `bigquery-public-data.stackoverflow.posts_answers` as Risposte ON Domande.id = Risposte.parent_id " 
 				+"WHERE Risposte.owner_user_id is NOT NULL "
@@ -219,7 +221,9 @@ public final class SOQuery implements ISOQuery {
 	    	int d=0;
 	        TableResult result = queryJob.getQueryResults();
 	        switch (query) {
+
 	         case 1: case 2:
+
 	        	for (FieldValueList row : result.getValues()) {
 						d++;
 			            Long[] UserID= {row.get("User").getLongValue()};
@@ -227,15 +231,19 @@ public final class SOQuery implements ISOQuery {
 			            results.add(UserID);  
 	        	 }
 	        	 break;
+
 	         case 3: case 4: case 5:
 	        	 for (FieldValueList row : result.getValues()) {
+
         				d++;
         				Long[] valori= {row.get("Ris").getLongValue(), row.get("Dom").getLongValue()};
         				System.out.println("#"+d+" from:"+valori[0]+" to:"+valori[1]);
         				results.add(valori);
         		}
         		break;
+
 	         case 6:
+
 	        	 for (FieldValueList row : result.getValues()) {
      				d++;
      				Long[] valori= {row.get("Ris").getLongValue(), row.get("Dom").getLongValue(), row.get("weight").getLongValue()};
