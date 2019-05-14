@@ -48,192 +48,228 @@ public final class AppMain {
 		GoogleDocsUtils ut = new GoogleDocsUtils();
 		String spid="";
 		String[] type= {"",""};
-        int query=0;
+    int query=0;
+    boolean edge=false;
+    boolean weight=false;
+    String yyyy="";
+    String mm="";
+    String dd="";
+    String tipo="";
+    String taglike="";
+    String limit="";
 		String groupby="";
-		String weight="";
-        //String[] prova= {"yyyy=2016", "mm=02", "dd=11", "type=question", "edge=no", "weight=no", "limit=100"};        
-
-        
+		String column3="";
+		String user="";
+        //String[] prova={"yyyy=2016", "mm=02", "dd=11", "type=question", "edge=yes", "weight=no", "limit=100"};    
 		if (args.length > 0) {
-			switch (args[3]) {
-			case "type=question":
-				switch ((args[4].split("=")[0])){				
-				
-					case "edge":
-						if (((args[5].split("="))[0]).equals("weight")) {
-							switch ((args[5].split("=")[1])){
-							case "yes": 
-								if (((args[4].split("="))[1]).equals("yes")) {
-									System.out.println("Visualizzare la lista delle prime 100 triple (from, to, weight) relative a domande (Question) poste " + 
-											"in un dato anno, mese e giorno");
-									query=7;
-									groupby=" GROUP BY Risposte.owner_user_id, Domande.owner_user_id";
-									weight=", COUNT (*) AS weight";
-									spid = ut.createSheet("Sprint 2 hopcroft - User Story 4");
-								} else {
-									System.out.println("Se il valore di 'weight' è 'yes', il valore di edge deve essere necessariamente 'yes'!");
-									System.exit(0);
-									}
-							break;
-							case "no": 
-								if (((args[4].split("="))[1]).equals("yes")){
-									System.out.println("Visualizzare la lista delle prime 100 coppie (from, to) relative a domande (Question) poste in un "
-										+	"dato anno, mese e giorno");
-									query=4;
-									spid = ut.createSheet("Sprint 2 hopcroft - User Story 1");
-									}
-								else {
-									query=3;
-									System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
-									type[0]="1";
-									type[1]="1";
-									spid = ut.createSheet("Sprint 1 hopcroft - User Story 1");
-									}
-							break;
-							
-							}
+			for (int i=0;i<args.length;i++) {
+				switch ((args[i].split("="))[0]) {
+					case "yyyy": 
+						yyyy=((args[i].split("="))[1]);
+					break;
+					case "mm": 
+						mm=((args[i].split("="))[1]);
+					break;
+					case "dd": 
+						dd=((args[i].split("="))[1]);
+					break;
+					case "type": 
+						tipo=((args[i].split("="))[1]);
+						switch (tipo) {
+							case "question": case "questions":
+								type[0]="1";
+								type[1]="1";
+								break;
+							case "answer": case "answers":
+								type[0]="2";
+								type[1]="2";
+								break;
+							case "post": case "posts":
+								type[0]="1";
+								type[1]="2";
+								break;
 						}
-						break;
-					case "limit":
-						System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
-						type[0]="1";
-						type[1]="1";
-						query=1;
-						spid = ut.createSheet("Sprint 1 hopcroft - User Story 1");
-						break;}
-				break;
-
-				
-				
-				
-				
-				
-				
-			case "type=answer":
-				System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno dato almeno una risposta ");
-				type[0]="2";
-				type[1]="2";
-				query=1;
-				spid = ut.createSheet("Sprint 1 hopcroft - User Story 2");
-				break;
-				
-			case "type=post":
-				System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno un post ");
-				type[0]="1";
-				type[1]="2";
-				query=1;
-				spid = ut.createSheet("Sprint 1 hopcroft - User Story 3");
-				break;
-				
-			default: 
-				switch (((args[3].split("="))[0])) {
-				case "taglike":
-					switch (args[2]) {
-					case "type=question":
-						System.out.println("Visualizzare la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda (Question) su un dato argomento (Tag) ");
-						type[0]="1";
-						type[1]="1";
-						query=2;
-						spid = ut.createSheet("Sprint 1 hopcroft - User Story 4");
-						break;
-				
-					case "type=answer":
-						System.out.println("Visualizzare la lista dei primi 100 id utente (User) che hanno dato almeno una risposta (Answer) su un dato argomento (Tag) ");
-						type[0]="2";
-						type[1]="2";
-						query=2;
-						spid = ut.createSheet("Sprint 1 hopcroft - User Story 5");
-						break;
-					
-					case "type=post":
-						System.out.println("Visualizzare la lista dei primi 100 id utente (User) che hanno fatto almeno un Post su un dato argomento (Tag)");
-						type[0]="1";
-						type[1]="2";
-						query=2;
-						spid = ut.createSheet("Sprint 1 hopcroft - User Story 6");
-						break;
+					break;
+					case "edge": 
+						switch ((args[i].split("="))[1]) {
+							case "yes":
+								edge=(true);
+								break;
+							case "no":
+								edge=(false);
+								break;
+							default:
+								System.out.println("Errore! Campo 'edge' diverso da 'yes' o 'no'");
+								System.exit(0);
+								break;
+						}
+					break;
+					case "weight": 
+						switch ((args[i].split("="))[1]) {
+						case "yes":
+							weight=(true);
+							break;
+						case "no":
+							weight=(false);
+							break;
+						default:
+							System.out.println("Errore! Campo 'weight' diverso da 'yes' o 'no'");
+							System.exit(0);
+							break;
 					}
 					break;
-					
-				case "limit":
-					switch (args[0]) {
-					
-					case "type=question":
-						System.out.println("Visualizzare la lista delle prime 100 coppie (from, to) relative a domande (Question) poste da un determinato utente.");
-						query=5;
-						spid = ut.createSheet("Sprint 2 hopcroft - User Story 2");
+					case "limit":
+						limit=((args[i].split("="))[1]);
+					break;
+					case "taglike":
+						taglike=((args[i].split("="))[1]);
+
 						break;
-					case "type=answer":
-						System.out.println("Visualizzare la lista delle prime 100 coppie (from, to) relative a risposte (Answer) date da un determinato utente.");
-						query=6;            
-						spid = ut.createSheet("Sprint 2 hopcroft - User Story 3");
-					}
-					
-					
-				break;
-					
-				 default: {System.out.println("Inserire dati in formato yyyy=____ mm=__ dd=__ type=________ limit=___ \n oppure yyyy=____ mm=__ type=________ taglike=____ limit=___ "
-						+"\n oppure yyyy=____ mm=__ dd=__ type=________ edge=___ limit=___ \n oppure type=__ user=___ edge=___ limit=___");
-					System.exit(0);
-					}
+					case "user":
+						user=((args[i].split("="))[1]);
+						break;
+					default:
+						System.out.println("Formato non corretto! \n Inserire dati in formato:\n"
+								+ " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s))  limit=___ \n"
+								+ " - yyyy=____  mm=__  type=(question(s), answer(s) or post(s))  taglike=____  limit=___ \n"
+								+ " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s)) edge=(yes or no)  limit=___ \n"
+								+ " - type=(question(s), answer(s) or post(s))  user=___  edge=(yes or no)  limit=___ \n"
+								+ " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s))  edge=(yes or no)  weight=(yes or no)  limit=100");
+						System.exit(0);
+					break;
+				}
 				
 			}
+		} else {
+			System.out.println("Formato non corretto! \n Inserire dati in formato:\n"
+					+ " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s))  limit=___ \n"
+					+ " - yyyy=____  mm=__  type=(question(s), answer(s) or post(s))  taglike=____  limit=___ \n"
+					+ " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s)) edge=(yes or no)  limit=___ \n"
+					+ " - type=(question(s), answer(s) or post(s))  user=___  edge=(yes or no)  limit=___ \n"
+					+ " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s))  edge=(yes or no)  weight=(yes or no)  limit=100");
+			System.exit(0);
 		}
-		}else {System.out.println("Inserire dati in formato yyyy=____ mm=__ dd=__ type=________ limit=___ \n oppure yyyy=____ mm=__ type=________ taglike=____ limit=___ "
-				+"\n oppure yyyy=____ mm=__ dd=__ type=________ edge=___ limit=___ \n oppure type=__ user=___ edge=___ limit=___");
-				System.exit(0);
-			}
+        
 		
-		String yyyy=(args[0].split("="))[1];
-		String mm=(args[1].split("="))[1];
-		String dd="";
+		//inizio Sprint 1
+		if (!edge && !weight && taglike.equals("")) {
+			switch (tipo){
+				case "question": case "questions":
+					System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
+					query=1;
+					spid = ut.createSheet("Sprint 1 hopcroft - User Story 1");
+					break;
+				case "answer": case "answers":
+					System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno dato almeno una risposta ");
+					query=1;
+					spid = ut.createSheet("Sprint 1 hopcroft - User Story 2");
+					break;
+				case "post": case "posts":
+					System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno un post ");
+					query=1;
+					spid = ut.createSheet("Sprint 1 hopcroft - User Story 3");
+					break;
+			}			
+		}
+		
+		if (!edge && !weight && !(taglike.equals(""))) {
+			switch (tipo){
+				case "question": case "questions":
+					System.out.println("Visualizzare la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda (Question) su un dato argomento (Tag) ");
+					query=2;
+					spid = ut.createSheet("Sprint 1 hopcroft - User Story 4");
+					break;
+				case "answer": case "answers":
+					System.out.println("Visualizzare la lista dei primi 100 id utente (User) che hanno dato almeno una risposta (Answer) su un dato argomento (Tag) ");
+					query=2;
+					spid = ut.createSheet("Sprint 1 hopcroft - User Story 5");
+					break;
+				case "post": case "posts":
+					System.out.println("Visualizzare la lista dei primi 100 id utente (User) che hanno fatto almeno un Post su un dato argomento (Tag)");
+					query=2;
+					spid = ut.createSheet("Sprint 1 hopcroft - User Story 6");
+					break;
+			}
+		}
+		//fine Sprint 1
+		
+		
+		
+		//inizio Sprint 2
+		if (edge && !weight) {
+			switch (tipo) {
+				case "question": case "questions":
+					if (user.equals("")) {
+						System.out.println("Visualizzare la lista delle prime 100 coppie (from, to) relative a domande (Question) poste in un "
+								+	"dato anno, mese e giorno");
+						query=3;
+						spid = ut.createSheet("Sprint 2 hopcroft - User Story 1");
+					}else {
+						System.out.println("Visualizzare la lista delle prime 100 coppie (from, to) relative a domande (Question) poste da un determinato utente.");
+						query=4;
+						spid = ut.createSheet("Sprint 2 hopcroft - User Story 2");
+					}
+					break;
+				case "answer": case "answers":
+					System.out.println("Visualizzare la lista delle prime 100 coppie (from, to) relative a risposte (Answer) date da un determinato utente.");
+					query=5;            
+					spid = ut.createSheet("Sprint 2 hopcroft - User Story 3");
+					break;
+			}
+		}
+		
+		if (edge && weight) {
+			switch (tipo) {
+			case "question": case "questions":
+				if (user.equals("")) {
+					System.out.println("Visualizzare la lista delle prime 100 triple (from, to, weight) relative a domande (Question) poste " + 
+							"in un dato anno, mese e giorno");
+					query=6;
+					groupby=" GROUP BY Risposte.owner_user_id, Domande.owner_user_id";
+					column3=", COUNT (*) AS weight";
+					spid = ut.createSheet("Sprint 2 hopcroft - User Story 4");
+				}//else {
+				
+				//}
+				break;
+			case "answer": case "answers":
+			
+				break;
+		}
+		}
+		
+		if (!edge && weight) {
+			System.out.println("Se il valore di 'weight' Ã¨ 'yes', il valore di edge deve essere necessariamente 'yes'!");
+			System.exit(0);
+		}
+		//fine Sprint 2
+		
+
+		
 		ISOQuery soq = new SOQuery();
 		Job job = null;
-		String taglike="";
-		String limit="";
-		String user="";
 		switch (query) {
 			case 1:
-				limit=(args[4].split("="))[1];
-				dd=(args[2].split("="))[1];
 				job = soq.runQuerySprint1(yyyy, mm, dd, type, limit);
 				break;
 			case 2:
-				limit=(args[4].split("="))[1];
-				taglike=(args[3].split("="))[1];
 				job = soq.runQuerySprint1(yyyy, mm, type, taglike, limit);
 				break;
 			case 3:
-				if (((args[5].split("="))[0]).equals("limit")){
-					limit=(args[5].split("="))[1];}
-					else {
-						limit=(args[6].split("="))[1];}
-					dd=(args[2].split("="))[1];
-				job = soq.runQuerySprint1(yyyy, mm, dd, type, limit);
+
+				job = soq.runQuerySprint2(yyyy, mm, dd, limit, groupby, column3);
 				break;
 			case 4:
-				if (((args[5].split("="))[0]).equals("limit")){
-				limit=(args[5].split("="))[1];}
-				else {
-					limit=(args[6].split("="))[1];}
-				dd=(args[2].split("="))[1];
-				job = soq.runQuerySprint2(yyyy, mm, dd, limit, groupby, weight);
-				break;
-			case 5:
-				limit=(args[3].split("="))[1];
-				user=(args[1].split("="))[1];
+
 				job = soq.runQuerySprint2(user, limit, "Ris", "Domande", "Risposte");
 				break;
-			case 6:
-				limit=(args[3].split("="))[1];
-				user=(args[1].split("="))[1];
+			case 5:
 				job = soq.runQuerySprint2(user, limit, "Dom", "Risposte", "Domande");
 				break;
-			case 7:
-				limit=(args[6].split("="))[1];
-				dd=(args[2].split("="))[1];
-				job = soq.runQuerySprint2(yyyy, mm, dd, limit, groupby, weight);
-				
+
+			case 6:
+				job = soq.runQuerySprint2(yyyy, mm, dd, limit, groupby, column3);
+
 		}
 		
 
@@ -241,7 +277,6 @@ public final class AppMain {
 		ut.shareSheet(spid);
 		ut.getSheetByTitle(spid);
 		ut.writeSheet(spid, res, query);
-
 		System.exit(0);
 		
 

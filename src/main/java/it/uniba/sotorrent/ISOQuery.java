@@ -18,7 +18,9 @@ public interface ISOQuery {
 	*/
 	Job runQuerySprint1(String yyyy, String mm, String dd, String[] type, String limit) throws InterruptedException;
 	Job runQuerySprint1(String yyyy, String mm, String[] type, String taglike, String limit) throws InterruptedException;
-	Job runQuerySprint2(String yyyy, String mm, String dd, String limit, String group, String weight) throws InterruptedException;
+
+	Job runQuerySprint2(String yyyy, String mm, String dd, String limit, String group, String column3) throws InterruptedException;
+
 	Job runQuerySprint2(String user, String limit, String order, String where, String nnull) throws InterruptedException;
 
 	
