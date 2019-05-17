@@ -1,17 +1,9 @@
-/**
- * 
- */
-/**
- * 
- */
 package it.uniba.sotorrent;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-//import java.util.HashMap;
-//import java.util.Map;
 import java.util.UUID;
 import java.util.List;
 
@@ -25,7 +17,17 @@ import com.google.cloud.bigquery.JobId;
 import com.google.cloud.bigquery.JobInfo;
 import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.TableResult;
-
+ /**
+  * <<ENTITY>>
+  * 
+  * 
+  * Class which defines functions that set and run queries, using Google BigQuery service.
+  * Is also defined the function able to fill a list with query results.
+  * 
+  * Classe che definisce le funzioni in grado di impostare le query, interfacciandosi con il servizio BigQuery di Google.
+  * Inoltre è definita la funzione in grado di riempire la lista coi risultati delle query.
+  * 
+  */
 
 public final class SOQuery implements ISOQuery {
 	/**
@@ -54,7 +56,18 @@ public final class SOQuery implements ISOQuery {
 		// See: https://cloud.google.com/bigquery/sql-reference/
 
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(
-				
+				/**
+				 * La query seleziona univoci e non nulli user id dai dati di Stack Overflow filtrandoli in base ad anno, mese e giorno
+				 * ed ordinandoli in modo crescente.
+				 * 
+				 * Se type[0]=1 && type[1]=1, la query prenderà i risultati solamente dai post classificati come domande perchè la seconda parte della query verrà ignorata
+				 * in quanto post_type_id=1 è incompatibile con la fonte `bigquery-public-data.stackoverflow.posts_questions`.
+				 * 
+				 * Se type[0]=2 && type[1]=2, la query prenderà i risultati solamente dai post classificati come risposte perchè la prima parte della query verrà ignorata
+				 * in quanto post_type_id=2 è incompatibile con la fonte `bigquery-public-data.stackoverflow.posts_answers`.
+				 * 
+				 * Se type[0]=1 && type[1]=2, la query prenderà i risultati sia dalle domande che dalle risposte.
+				 */
 				      "(SELECT DISTINCT owner_user_id as User "
 					+ "FROM `bigquery-public-data.stackoverflow.posts_questions`"
 					+ "WHERE owner_user_id IS NOT null "
@@ -101,7 +114,22 @@ public final class SOQuery implements ISOQuery {
 	public Job runQuerySprint1(String yyyy, String mm, String[] type, String taglike, String limit) throws InterruptedException {
 		
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(
-				 "(SELECT DISTINCT owner_user_id as User "							//Select Distinct +colonna1=((query==1)? "owner_user_id as User" : "Risposte.owner_user_id as User"
+				/**
+				 * La query seleziona univoci e non nulli user id dai dati di Stack Overflow filtrandoli in base ad anno, mese e tag
+				 * ed ordinandoli in modo crescente.
+				 * 
+				 * Se type[0]=1 && type[1]=1, la query prenderà i risultati solamente dai post classificati come domande perchè la seconda parte della query verrà ignorata
+				 * in quanto post_type_id=1 è incompatibile con la fonte `bigquery-public-data.stackoverflow.posts_questions`.
+				 * 
+				 * Se type[0]=2 && type[1]=2, la query prenderà i risultati solamente dai post classificati come risposte perchè la prima parte della query verrà ignorata
+				 * in quanto post_type_id=2 è incompatibile con la fonte `bigquery-public-data.stackoverflow.posts_answers`.
+				 * 
+				 * Se type[0]=1 && type[1]=2, la query prenderà i risultati sia dalle domande che dalle risposte.
+				 * 
+				 * Nello specifico la seconda parte della query dovrà far riferimento ad entrambe le fonti di domande e risposte in quanto il tag è applicabile solo alle domande
+				 * e dunque verranno visualizzate tutte le risposte alle domande contenenti il determinato tag.
+				 */
+				 "(SELECT DISTINCT owner_user_id as User "						
 				+ "FROM `bigquery-public-data.stackoverflow.posts_questions` "
 				+ "WHERE owner_user_id IS NOT null"
 				+ " AND post_type_id="+type[0]
@@ -145,11 +173,17 @@ public final class SOQuery implements ISOQuery {
 	}
 	
 	@Override
-
 	public Job runQuerySprint2(String yyyy, String mm, String dd, String limit, String groupby, String column3) throws InterruptedException{
 
-		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder("SELECT Risposte.owner_user_id as Ris, Domande.owner_user_id as Dom" +column3
-
+		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(
+				/**
+				 * La query seleziona coppie non nulle di user id relativi agli utenti che hanno creato un post di domanda e chi vi ha risposto 
+				 * I dati sono estrapolati da quelli di Stack Overflow e filtrati in base ad anno, mese e giorno
+				 * ed ordinati in modo crescente.
+				 * 
+				 * Nel caso della quarta richiesta dello Sprint 2 verrà visualizzato anche il numero di risposte che un utente ha dato al domandante.
+				 */
+			   	 "SELECT Risposte.owner_user_id as Ris, Domande.owner_user_id as Dom" +column3
 				+" FROM `bigquery-public-data.stackoverflow.posts_questions` as Domande " 
 				+"INNER JOIN `bigquery-public-data.stackoverflow.posts_answers` as Risposte ON Domande.id = Risposte.parent_id " 
 				+"WHERE Risposte.owner_user_id is NOT NULL "
@@ -183,7 +217,20 @@ public final class SOQuery implements ISOQuery {
 	
 	@Override
 	public Job runQuerySprint2(String user, String limit, String order, String where, String nnull, String groupby, String column3) throws InterruptedException{
-		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder("SELECT distinct Risposte.owner_user_id as Ris, Domande.owner_user_id as Dom " +column3 
+		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(
+				/**
+				 * La query seleziona coppie non nulle di user id relativi agli utenti che hanno creato un post di domanda e chi vi ha risposto.
+				 * I dati sono estrapolati da quelli di Stack Overflow, filtrati sulla base di uno specifico utente ed ordinati in modo crescente.
+				 * 
+				 * Nel caso della seconda e quinta richiesta dello Sprint 2 l'utente specifico verrà selezionato tra i domandanti e
+				 * verranno visualizzati tutti coloro che hanno risposto ai suoi post.
+				 * 
+				 * Nel caso della terza e sesta richiesta dello Sprint 2 l'utente specifico verrà selezionato tra coloro che hanno risposto e 
+				 * verranno visualizzati tutti coloro ai quali questo utente ha risposto ad almeno una domanda.
+				 * 
+				 * In aggiunta, nel caso della quinta e sesta richiesta verrà visualizzato anche il numero di risposte che un utente ha dato al domandante.
+				 */
+				 "SELECT distinct Risposte.owner_user_id as Ris, Domande.owner_user_id as Dom " +column3 
 				+" FROM `bigquery-public-data.stackoverflow.posts_questions` as Domande " 
 				+"INNER JOIN `bigquery-public-data.stackoverflow.posts_answers` as Risposte ON Domande.id = Risposte.parent_id " 
 				+"WHERE "+where+".owner_user_id = "+user
@@ -212,9 +259,6 @@ public final class SOQuery implements ISOQuery {
 				return queryJob;
 	}
 	
-
-
-
 	public List<Long[]> getResults(final Job queryJob, int query) throws JobException, InterruptedException {
 	    
 	    List<Long[]> results = new ArrayList<>();

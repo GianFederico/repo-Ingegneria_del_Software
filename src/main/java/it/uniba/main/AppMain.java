@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
-//import java.util.Map;
 import java.util.List;
 
 import com.google.cloud.bigquery.Job;
@@ -14,11 +13,16 @@ import it.uniba.sotorrent.ISOQuery;
 import it.uniba.sotorrent.SOQuery;
 
 /**
- * The main class for the project. It must be customized to meet the project
- * assignment specifications.
+ * <<BOUNDARY>>
+ * 
+ * La classe principale del progetto. 
+ * Acquisisce i dati da command-line interpretandoli in modo
+ * da eseguire la funzione in grado di restituire i risultati corretti
+ * in base ai dati inseriti dall'utente  
  * 
  * <b>DO NOT RENAME</b>
  */
+
 public final class AppMain {
 
 	/**
@@ -29,10 +33,9 @@ public final class AppMain {
 	}
 
 	/**
-	 * 	 * This is the main entry of the application.
+	 *  This is the main entry of the application.
 	 *
-	 * @param args
-	 *                 The command-line arguments.
+	 * @param args The command-line arguments.
 	 * @throws FileNotFoundException See stack trace for proper location.
 	 * @throws IOException  See stack trace for proper location.
 	 * @throws InterruptedException  See stack trace for proper location.
@@ -61,6 +64,9 @@ public final class AppMain {
 		String column3="";
 		String user="";
            
+		/**
+		 * Smistamento dati ottenuti da command-line
+		 */
 		if (args.length > 0) {
 			for (int i=0;i<args.length;i++) {
 				switch ((args[i].split("="))[0]) {
@@ -127,30 +133,37 @@ public final class AppMain {
 					case "user":
 						user=((args[i].split("="))[1]);
 						break;
+						
 					default:
+						//Messaggio di errore in caso di input errato
 						System.out.println("Formato non corretto! \n Inserire dati in formato:\n"
 								+ " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s))  limit=___ \n"
 								+ " - yyyy=____  mm=__  type=(question(s), answer(s) or post(s))  taglike=____  limit=___ \n"
 								+ " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s)) edge=(yes or no)  limit=___ \n"
 								+ " - type=(question(s), answer(s) or post(s))  user=___  edge=(yes or no)  limit=___ \n"
-								+ " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s))  edge=(yes or no)  weight=(yes or no)  limit=100");
+								+ " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s))  edge=(yes or no)  weight=(yes or no)  limit=___");
 						System.exit(0);
 					break;
 				}				
 			}
 		} else {
+			//Messaggio di errore nel caso di input vuoto
 			System.out.println("Formato non corretto! \n Inserire dati in formato:\n"
 					+ " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s))  limit=___ \n"
 					+ " - yyyy=____  mm=__  type=(question(s), answer(s) or post(s))  taglike=____  limit=___ \n"
 					+ " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s)) edge=(yes or no)  limit=___ \n"
 					+ " - type=(question(s), answer(s) or post(s))  user=___  edge=(yes or no)  limit=___ \n"
-					+ " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s))  edge=(yes or no)  weight=(yes or no)  limit=100");
+					+ " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s))  edge=(yes or no)  weight=(yes or no)  limit=___");
 			System.exit(0);
 		}
         
 		
 		//inizio Sprint 1
-		if (!edge && !weight && taglike.equals("")) {
+		
+		/**
+		 * Richieste 1,2 e 3 dello Sprint 1
+		 */
+		if (!edge && !weight && taglike.equals("")) { //
 			switch (tipo){
 				case "question": case "questions":
 					System.out.println("Visualizza la lista dei primi 100 id utente (User) che hanno fatto almeno una domanda ");
@@ -170,6 +183,9 @@ public final class AppMain {
 			}			
 		}
 		
+		/**
+		 * Richieste 4,5 e 6 dello Sprint 1
+		 */
 		if (!edge && !weight && !(taglike.equals(""))) {
 			switch (tipo){
 				case "question": case "questions":
@@ -194,6 +210,10 @@ public final class AppMain {
 		
 		
 		//inizio Sprint 2
+		
+		/**
+		 * Richieste 1,2 e 3 dello Sprint 2
+		 */
 		if (edge && !weight) {
 			switch (tipo) {
 				case "question": case "questions":
@@ -216,6 +236,9 @@ public final class AppMain {
 			}
 		}
 		
+		/**
+		 * Richieste 4,5 e 6 dello Sprint 2
+		 */
 		if (edge && weight) {
 			groupby=" GROUP BY Risposte.owner_user_id, Domande.owner_user_id";
 			column3=", COUNT (*) AS weight";
@@ -242,23 +265,31 @@ public final class AppMain {
 		 }
 		}
 		
+		/**
+		 * Messaggio di errore nel caso di input non corretto
+		 */
 		if (!edge && weight) {
 			System.out.println("Se il valore di 'weight' e' 'yes', il valore di edge deve essere necessariamente 'yes'!");
 			System.exit(0);
 		}
 		//fine Sprint 2
 		
-		/*Valori di query: 1-->User Story 1,2 e 3 dello Sprint 1
-		 * 				   2-->User Story 4,5 e 6 dello Sprint 1
-		 * 				   3-->User Story 1 dello Sprint 2
-		 * 				   4-->User Story 2 dello Sprint 2
-		 * 				   5-->User Story 3 dello Sprint 2	 
-		 *  			   6-->User Story 4 dello Sprint 2
-		 *   			   7-->User Story 5 dello Sprint 2
-		 *   			   8-->User Story 6 dello Sprint 2	 	 	 */
 		
 		ISOQuery soq = new SOQuery();
 		Job job = null;
+		
+		/** 
+		 * Scelta della query da eseguire in base ai valori della variabile 'query'
+		 * 
+		 * Valori di 'query': 1-->User Story 1,2 e 3 dello Sprint 1
+		 * 				      2-->User Story 4,5 e 6 dello Sprint 1
+		 * 				      3-->User Story 1 dello Sprint 2
+		 * 				      4-->User Story 2 dello Sprint 2
+		 * 				      5-->User Story 3 dello Sprint 2	 
+		 *  			      6-->User Story 4 dello Sprint 2
+		 *   			      7-->User Story 5 dello Sprint 2
+		 *   			      8-->User Story 6 dello Sprint 2	 	 	 
+		 */
 		switch (query) {
 			case 1:
 				job = soq.runQuerySprint1(yyyy, mm, dd, type, limit);
@@ -277,11 +308,11 @@ public final class AppMain {
 				break;
 		}
 		
-
-		List<Long[]> res= soq.getResults(job, query);
-		ut.shareSheet(spid);
-		ut.getSheetByTitle(spid);
-		ut.writeSheet(spid, res, query);
+		
+		List<Long[]> res= soq.getResults(job, query); //Riempimento della lista coi valori ottenuti dalla query
+		ut.shareSheet(spid);						  //Rende disponibile a chiunque abbia il link l'accesso allo spreadsheet coi risultati
+		ut.getSheetByTitle(spid);					  //Associa il titolo dello spreadsheet al suo id
+		ut.writeSheet(spid, res, query);			  //Scrive i risultati contenuti nella lista res sullo spreadsheet di Google
 		System.exit(0);
 		
 
