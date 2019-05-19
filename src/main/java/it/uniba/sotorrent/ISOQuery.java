@@ -6,7 +6,8 @@ import java.util.List;
 import com.google.cloud.bigquery.Job;
 
 /**
- * <<CONTROL>>
+
+ * <<noECB>>
  * 
  * Interface to run queries on Stack Overflow via Google's BigQuery service.
  * 

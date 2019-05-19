@@ -25,7 +25,7 @@ import com.google.cloud.bigquery.TableResult;
   * Is also defined the function able to fill a list with query results.
   * 
   * Classe che definisce le funzioni in grado di impostare le query, interfacciandosi con il servizio BigQuery di Google.
-  * Inoltre Ë definita la funzione in grado di riempire la lista coi risultati delle query.
+  * Inoltre √® definita la funzione in grado di riempire la lista coi risultati delle query.
   * 
   */
 
@@ -60,13 +60,13 @@ public final class SOQuery implements ISOQuery {
 				 * La query seleziona univoci e non nulli user id dai dati di Stack Overflow filtrandoli in base ad anno, mese e giorno
 				 * ed ordinandoli in modo crescente.
 				 * 
-				 * Se type[0]=1 && type[1]=1, la query prender‡ i risultati solamente dai post classificati come domande perchË la seconda parte della query verr‡ ignorata
-				 * in quanto post_type_id=1 Ë incompatibile con la fonte `bigquery-public-data.stackoverflow.posts_questions`.
+				 * Se type[0]=1 && type[1]=1, la query prender√† i risultati solamente dai post classificati come domande perch√® la seconda parte della query verr√† ignorata
+				 * in quanto post_type_id=1 √® incompatibile con la fonte `bigquery-public-data.stackoverflow.posts_questions`.
 				 * 
-				 * Se type[0]=2 && type[1]=2, la query prender‡ i risultati solamente dai post classificati come risposte perchË la prima parte della query verr‡ ignorata
-				 * in quanto post_type_id=2 Ë incompatibile con la fonte `bigquery-public-data.stackoverflow.posts_answers`.
+				 * Se type[0]=2 && type[1]=2, la query prender√† i risultati solamente dai post classificati come risposte perch√® la prima parte della query verr√† ignorata
+				 * in quanto post_type_id=2 √® incompatibile con la fonte `bigquery-public-data.stackoverflow.posts_answers`.
 				 * 
-				 * Se type[0]=1 && type[1]=2, la query prender‡ i risultati sia dalle domande che dalle risposte.
+				 * Se type[0]=1 && type[1]=2, la query prender√† i risultati sia dalle domande che dalle risposte.
 				 */
 				      "(SELECT DISTINCT owner_user_id as User "
 					+ "FROM `bigquery-public-data.stackoverflow.posts_questions`"
@@ -118,15 +118,15 @@ public final class SOQuery implements ISOQuery {
 				 * La query seleziona univoci e non nulli user id dai dati di Stack Overflow filtrandoli in base ad anno, mese e tag
 				 * ed ordinandoli in modo crescente.
 				 * 
-				 * Se type[0]=1 && type[1]=1, la query prender‡ i risultati solamente dai post classificati come domande perchË la seconda parte della query verr‡ ignorata
-				 * in quanto post_type_id=1 Ë incompatibile con la fonte `bigquery-public-data.stackoverflow.posts_questions`.
+				 * Se type[0]=1 && type[1]=1, la query prender√† i risultati solamente dai post classificati come domande perch√® la seconda parte della query verr√† ignorata
+				 * in quanto post_type_id=1 √® incompatibile con la fonte `bigquery-public-data.stackoverflow.posts_questions`.
 				 * 
-				 * Se type[0]=2 && type[1]=2, la query prender‡ i risultati solamente dai post classificati come risposte perchË la prima parte della query verr‡ ignorata
-				 * in quanto post_type_id=2 Ë incompatibile con la fonte `bigquery-public-data.stackoverflow.posts_answers`.
+				 * Se type[0]=2 && type[1]=2, la query prender√† i risultati solamente dai post classificati come risposte perch√® la prima parte della query verr√† ignorata
+				 * in quanto post_type_id=2 √® incompatibile con la fonte `bigquery-public-data.stackoverflow.posts_answers`.
 				 * 
-				 * Se type[0]=1 && type[1]=2, la query prender‡ i risultati sia dalle domande che dalle risposte.
+				 * Se type[0]=1 && type[1]=2, la query prender√† i risultati sia dalle domande che dalle risposte.
 				 * 
-				 * Nello specifico la seconda parte della query dovr‡ far riferimento ad entrambe le fonti di domande e risposte in quanto il tag Ë applicabile solo alle domande
+				 * Nello specifico la seconda parte della query dovr√† far riferimento ad entrambe le fonti di domande e risposte in quanto il tag √® applicabile solo alle domande
 				 * e dunque verranno visualizzate tutte le risposte alle domande contenenti il determinato tag.
 				 */
 				 "(SELECT DISTINCT owner_user_id as User "						
@@ -181,7 +181,7 @@ public final class SOQuery implements ISOQuery {
 				 * I dati sono estrapolati da quelli di Stack Overflow e filtrati in base ad anno, mese e giorno
 				 * ed ordinati in modo crescente.
 				 * 
-				 * Nel caso della quarta richiesta dello Sprint 2 verr‡ visualizzato anche il numero di risposte che un utente ha dato al domandante.
+				 * Nel caso della quarta richiesta dello Sprint 2 verr√† visualizzato anche il numero di risposte che un utente ha dato al domandante.
 				 */
 			   	 "SELECT Risposte.owner_user_id as Ris, Domande.owner_user_id as Dom" +column3
 				+" FROM `bigquery-public-data.stackoverflow.posts_questions` as Domande " 
@@ -222,13 +222,13 @@ public final class SOQuery implements ISOQuery {
 				 * La query seleziona coppie non nulle di user id relativi agli utenti che hanno creato un post di domanda e chi vi ha risposto.
 				 * I dati sono estrapolati da quelli di Stack Overflow, filtrati sulla base di uno specifico utente ed ordinati in modo crescente.
 				 * 
-				 * Nel caso della seconda e quinta richiesta dello Sprint 2 l'utente specifico verr‡ selezionato tra i domandanti e
+				 * Nel caso della seconda e quinta richiesta dello Sprint 2 l'utente specifico verr√† selezionato tra i domandanti e
 				 * verranno visualizzati tutti coloro che hanno risposto ai suoi post.
 				 * 
-				 * Nel caso della terza e sesta richiesta dello Sprint 2 l'utente specifico verr‡ selezionato tra coloro che hanno risposto e 
+				 * Nel caso della terza e sesta richiesta dello Sprint 2 l'utente specifico verr√† selezionato tra coloro che hanno risposto e 
 				 * verranno visualizzati tutti coloro ai quali questo utente ha risposto ad almeno una domanda.
 				 * 
-				 * In aggiunta, nel caso della quinta e sesta richiesta verr‡ visualizzato anche il numero di risposte che un utente ha dato al domandante.
+				 * In aggiunta, nel caso della quinta e sesta richiesta verr√† visualizzato anche il numero di risposte che un utente ha dato al domandante.
 				 */
 				 "SELECT distinct Risposte.owner_user_id as Ris, Domande.owner_user_id as Dom " +column3 
 				+" FROM `bigquery-public-data.stackoverflow.posts_questions` as Domande " 
