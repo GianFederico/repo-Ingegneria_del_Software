@@ -45,11 +45,12 @@ public final class AppMain {
 												 InterruptedException,
 												 GeneralSecurityException,
 												 URISyntaxException {
-		
+
 		System.out.println("Current working dir: " + System.getProperty("user.dir"));
 		
 		Controller ct= new Controller();
 		ct.Control(args);
+
 		System.exit(0);
 	}
 }

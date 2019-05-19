@@ -173,7 +173,7 @@ public class GoogleDocsUtils {
 	/**
 	 * Write results to the spreadsheet relying on the query used to obtain them.
 	 * 
-	 * Scrive i risultati sullo spreadsheet in base a quale query è stata utilizzata per ottenerli.
+	 * Scrive i risultati sullo spreadsheet in base a quale query Ã¨ stata utilizzata per ottenerli.
 	 * 
 	 * Also, see <a href="https://developers.google.com/sheets/api/guides/values">here</a>.
 	 * @param spid The spreadsheet id.
