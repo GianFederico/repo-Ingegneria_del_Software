@@ -7,7 +7,6 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-//import java.util.Map;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
@@ -33,7 +32,12 @@ import com.google.api.services.sheets.v4.model.UpdateCellsRequest;
 
 
 /**
+ * <<ENTITY>>
+ * 
  * Utility class for creating, sharing, and deleting Google spreadsheets.
+ * 
+ * Classe di utility per la creazione, condivisione ed eliminazione dei Google spreadsheets.
+ * 
  * For more, refer to <a href="https://developers.google.com/sheets/api/samples/">this documentation</a>.
  */
 public class GoogleDocsUtils {
@@ -102,7 +106,7 @@ public class GoogleDocsUtils {
 	}
 
 	/**
-	 * Instantiates the the Google Drive service.
+	 * Instantiates the Google Drive service.
 	 * @return Instance of the Google Drive service.
 	 * @throws IOException Generic I/O error.
 	 * @throws GeneralSecurityException Failed authentication.
@@ -142,7 +146,16 @@ public class GoogleDocsUtils {
 	}
 
 
-	
+	/**
+	 * Instantiates the write requests for the Google spreadsheet.
+	 * 
+	 * Istanzia le richieste di scrittura per il Google spreadsheet.
+	 * 
+	 * @param values Values that have to be written.
+	 * @param spid Google spreadsheet id.
+	 * @param rowIndex  Index of the row in which write.
+	 * @throws IOException Generic I/O error.
+	 */
 	public void writeRequest(List<CellData> values, final String spid, int rowIndex) throws IOException  {
 		List<Request> requests = new ArrayList<>();
 
@@ -158,31 +171,34 @@ public class GoogleDocsUtils {
 	
 	
 	/**
-	 * Write results to the spreadsheet. Also, see <a href="https://developers.google.com/sheets/api/guides/values">here</a>.
+	 * Write results to the spreadsheet relying on the query used to obtain them.
+	 * 
+	 * Scrive i risultati sullo spreadsheet in base a quale query è stata utilizzata per ottenerli.
+	 * 
+	 * Also, see <a href="https://developers.google.com/sheets/api/guides/values">here</a>.
 	 * @param spid The spreadsheet id.
-	 * @param res The hash map of the results, with URL as key and view count as value.
+	 * @param query Index used to identify which query has been used.
+	 * @param res list of the results, with as many column as the resultant table from the query.
 	 * @throws IOException Generic I/O error.
 	 */	
 	public void writeSheet(final String spid, final List<Long[]> res, int query) throws IOException {
 		List<CellData> values = new ArrayList<>();
 		String[] colonne= {"","to","weight"};
 		int rowIndex=0;
+		
+		/**
+		* Assegnazione titoli alle colonne del Google spreadsheet in base al valore di query.
+		*/
 		switch (query) {
-
         	case 1: case 2:
-
         		colonne[0]="owner_user_id";
         		values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[0])));
             break;
-            
-
         	case 3: case 4: case 5:
-
 	        	colonne[0]="from";
 	        	values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[0])));
 	        	values.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(colonne[1])));
 	        break;
-	        
 	        case 6: case 7: case 8:
 
 	        	colonne[0]="from";
@@ -197,10 +213,11 @@ public class GoogleDocsUtils {
 		if (null != res) {
 
 			rowIndex = 1;
+			/**
+			 * Assegnazione dei valori ottenuti dalla query ad ogni riga del Google spreadsheet in base al valore di query.
+			 */
 			switch (query) {
-
         	case 1: case 2:
-
 				for(int i=0;i<res.size();i++) {
 					values = new ArrayList<>();
 					Long[] UserID=res.get(i);
@@ -210,9 +227,7 @@ public class GoogleDocsUtils {
 					rowIndex++;
 				}
 			break;
-
         	case 3: case 4: case 5:
-
 				for(int i=0;i<res.size();i++) {
 					values = new ArrayList<>();
 					Long[] valori=res.get(i);
@@ -225,9 +240,7 @@ public class GoogleDocsUtils {
 					
 				}
 				break;
-
         	case 6: case 7: case 8:
-
         		for(int i=0;i<res.size();i++) {
 					values = new ArrayList<>();
 					Long[] valori=res.get(i);
