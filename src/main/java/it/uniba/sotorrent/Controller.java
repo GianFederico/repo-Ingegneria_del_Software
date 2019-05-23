@@ -9,8 +9,8 @@ import java.util.List;
 import com.google.cloud.bigquery.Job;
 
 import it.uniba.sotorrent.GoogleDocsUtils;
-import it.uniba.sotorrent.ISOQuery;
-import it.uniba.sotorrent.SOQuery;
+import it.uniba.sotorrent.IsoQuery;
+import it.uniba.sotorrent.SoQuery;
 
 /**
  * <<CONTROL>>
@@ -293,7 +293,7 @@ public final class Controller {
 		}
 		//end Sprint 2
 		
-		ISOQuery soq = new SOQuery();
+		IsoQuery soq = new SoQuery();
 		Job job = null;
 		
 		/** 
