@@ -63,7 +63,7 @@ public class GoogleDocsUtils {
   /**
  * The location where the SON credential file is stored on the Internet.
  */
-  private static final String url = "http://neo.di.uniba.it/credentials/project-hopcroft-dfhf4t.json";
+  private static final String URL = "http://neo.di.uniba.it/credentials/project-hopcroft-dfhf4t.json";
 
   /**
 * Default constructor, authenticates and instantiate services.
@@ -86,7 +86,7 @@ public class GoogleDocsUtils {
  * @throws URISyntaxException Malformed URI.
  */
   private Credential authorize() throws IOException, GeneralSecurityException, URISyntaxException {
-    GoogleCredential authCred = GoogleCredential.fromStream(new URL(url).openStream()).toBuilder()
+    GoogleCredential authCred = GoogleCredential.fromStream(new URL(URL).openStream()).toBuilder()
         .setServiceAccountScopes(SCOPES).build();
     return authCred;
   }
@@ -157,16 +157,16 @@ public class GoogleDocsUtils {
    * @param rowIndex  Index of the row in which write.
    * @throws IOException Generic I/O error.
    */
-  public void writeRequest(List<CellData> values, final String spid, int rowIndex)
+  public void writeRequest(final List<CellData> values, final String spid, final int rowIndex)
       throws IOException  {
     List<Request> requests = new ArrayList<>();
-  
+
     requests.add(new Request().setUpdateCells(
         new UpdateCellsRequest().setStart(new GridCoordinate().setSheetId(0).setRowIndex(rowIndex)
             .setColumnIndex(0))
         .setRows(Arrays.asList(new RowData().setValues(values)))
         .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
-    BatchUpdateSpreadsheetRequest batchUpdateRequest  = 
+    BatchUpdateSpreadsheetRequest batchUpdateRequest =
         new BatchUpdateSpreadsheetRequest().setRequests(requests);
     sheetsService.spreadsheets().batchUpdate(spid, batchUpdateRequest).execute();
   }
@@ -175,7 +175,7 @@ public class GoogleDocsUtils {
   /**
    * Write results to the spreadsheet relying on the query used to obtain them.
    * 
-   *<p>Scrive i risultati sullo spreadsheet in base a quale query Ã¨ stata utilizzata per ottenerli.
+   *<p>Scrive i risultati sullo spreadsheet in base a quale query è stata utilizzata per ottenerli.
    * 
    *<p>Also, see <a href = "https://developers.google.com/sheets/api/guides/values">here</a>.
    * @param spid The spreadsheet id.
@@ -183,28 +183,28 @@ public class GoogleDocsUtils {
    * @param res list of the results, with as many column as the resultant table from the query.
    * @throws IOException Generic I/O error.
    */
-  public void writeSheet(final String spid, final List<Long[]> res, int query) throws IOException {
+  public void writeSheet(final String spid, final List<Long[]> res, final String query) throws IOException {
     List<CellData> values = new ArrayList<>();
-    String[] colonne = {"","to","weight"};
+    String[] colonne = {"", "to", "weight"};
     int rowIndex = 0;
 
     /**
      * Assegnazione titoli alle colonne del Google spreadsheet in base al valore di query.
      */
     switch (query) {
-      case 1: case 2:
+      case "1": case "2":
         colonne[0] = "owner_user_id";
         values.add(new CellData().setUserEnteredValue(new ExtendedValue()
             .setStringValue(colonne[0])));
         break;
-      case 3: case 4: case 5:
+      case "3": case "4": case "5":
         colonne[0] = "from";
         values.add(new CellData().setUserEnteredValue(new ExtendedValue()
             .setStringValue(colonne[0])));
         values.add(new CellData().setUserEnteredValue(new ExtendedValue()
             .setStringValue(colonne[1])));
         break;
-      case 6: case 7: case 8:
+      case "6": case "7": case "8":
         colonne[0] = "from";
         values.add(new CellData().setUserEnteredValue(new ExtendedValue()
             .setStringValue(colonne[0])));
@@ -217,17 +217,16 @@ public class GoogleDocsUtils {
         break;
     }
     writeRequest(values, spid, rowIndex);
-        
-        
+
     if (null !=  res) {
       rowIndex = 1;
       /**
-         * Assegnazione dei valori ottenuti dalla query ad ogni riga del Google spreadsheet 
+         * Assegnazione dei valori ottenuti dalla query ad ogni riga del Google spreadsheet
          * in base al valore di query.
          */
       switch (query) {
-        case 1: case 2:
-          for (int i = 0;i < res.size();i++) {
+        case "1": case "2":
+          for (int i = 0; i < res.size(); i++) {
             values = new ArrayList<>();
             Long[] userID = res.get(i);
             values.add(
@@ -237,8 +236,8 @@ public class GoogleDocsUtils {
             rowIndex++;
           }
           break;
-        case 3: case 4: case 5:
-          for (int i = 0;i < res.size();i++) {
+        case "3": case "4": case "5":
+          for (int i = 0; i < res.size(); i++) {
             values = new ArrayList<>();
             Long[] valori = res.get(i);
             values.add(
@@ -251,8 +250,8 @@ public class GoogleDocsUtils {
             rowIndex++;
           }
           break;
-        case 6: case 7: case 8:
-          for (int i = 0;i < res.size();i++) {
+        case "6": case "7": case "8":
+          for (int i = 0; i < res.size(); i++) {
             values = new ArrayList<>();
             Long[] valori = res.get(i);
             values.add(
