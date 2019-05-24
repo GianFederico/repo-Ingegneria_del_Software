@@ -14,7 +14,7 @@ import java.security.GeneralSecurityException;
  * It obtains data from command-line and
  * passes them to the control class.
  * 
- *<p>La classe principale del progetto. 
+ *<p>La classe principale del progetto.
  * Acquisisce i dati da command-line e
  * li passa alla classe di controllo
  * 
