@@ -48,7 +48,7 @@ public final class AppMain {
 
     System.out.println("Current working dir: " + System.getProperty("user.dir"));
     Controller ct = new Controller();
-    ct.Control(args);
+    ct.control(args);
 
     System.exit(0);
   }

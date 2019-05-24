@@ -21,7 +21,7 @@ import java.util.UUID;
 
 
 /**
-  * ENTITY
+  * 'ENTITY'
   * 
   * <p>Class which defines functions that set and run queries, using Google BigQuery service.
   * Is also defined the function able to fill a list with query results.
