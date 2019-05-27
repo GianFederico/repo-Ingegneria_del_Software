@@ -48,9 +48,7 @@ public final class AppMain {
 
     System.out.println("Current working dir: " + System.getProperty("user.dir"));
     Controller ct = new Controller();
-    String[] prova = {"edge=yes", "weight=yes", "limit=10"};
-    //System.out.print(prova.length);
-    ct.control(prova);
+    ct.control(args);
 
     System.exit(0);
   }

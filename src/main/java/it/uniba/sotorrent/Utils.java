@@ -182,9 +182,9 @@ public final class Utils {
 
 
   /**
-   * Main method of the class. It fulfills the responsibilities of the class
+   * Method that sort values from the input from command-line.
    *
-   *<p>Metodo principale della classe. Assolve le responsabilità della classe
+   *<p>Metodo che smista i valori ottenuti da command-line.
    *
    * @param args The command-line arguments.
    * @throws FileNotFoundException See stack trace for proper location.
@@ -291,6 +291,17 @@ public final class Utils {
 
   }
 
+  /**
+   *<p>Method that choose which Sprint 1 request to fulfill based on the data from command-line.
+   *
+   *<p>Metodo che sceglie la richiesta dello Sprint 1 da assolvere basandosi sui dati ottenuti da command-line.
+   * 
+   * @param ut GoogleDocsUtils access
+   * @throws IOException
+   * @throws InterruptedException
+   * @throws GeneralSecurityException
+   * @throws URISyntaxException
+   */
   public void sprint1(final GoogleDocsUtils ut) throws IOException,
                                                        InterruptedException,
                                                        GeneralSecurityException,
@@ -353,6 +364,18 @@ public final class Utils {
 
   }
 
+
+  /**
+   *<p>Method that choose which Sprint 2 request to fulfill based on the data from command-line.
+   *
+   *<p>Metodo che sceglie la richiesta dello Sprint 2 da assolvere basandosi sui dati ottenuti da command-line.
+   * 
+   * @param ut GoogleDocsUtils access
+   * @throws IOException
+   * @throws InterruptedException
+   * @throws GeneralSecurityException
+   * @throws URISyntaxException
+   */
   public void sprint2(final GoogleDocsUtils ut) throws IOException,
                                                        InterruptedException,
                                                        GeneralSecurityException,
