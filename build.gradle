@@ -112,6 +112,12 @@ findbugs {
   effort = "max"
   //findbugsTest.enabled=false
   sourceSets = [sourceSets.main]
+  tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+  }
 }
 
 /*
