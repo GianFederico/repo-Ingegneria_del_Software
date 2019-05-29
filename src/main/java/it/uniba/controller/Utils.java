@@ -103,7 +103,6 @@ public final class Utils {
    * Se il metodo trova un valore di formato non valido, non concede al resto del programma di proseguire.
    *
    * @param args The command-line arguments.
-   * @throws FileNotFoundException See stack trace for proper location.
    * @throws IOException  See stack trace for proper location.
    * @throws InterruptedException  See stack trace for proper location.
    * @throws GeneralSecurityException  See stack trace for proper location.
@@ -256,10 +255,11 @@ public final class Utils {
    *
    *<p>Metodo che sceglie la richiesta dello Sprint 1 da assolvere basandosi sui dati ottenuti da command-line.
    * 
-   * @throws IOException
-   * @throws InterruptedException
-   * @throws GeneralSecurityException
-   * @throws URISyntaxException
+   * @throws IOException  See stack trace for proper location.
+   * @throws InterruptedException  See stack trace for proper location.
+   * @throws GeneralSecurityException  See stack trace for proper location.
+   * @throws URISyntaxException  See stack trace for proper location.
+   * @return request  Contains which sprint and which user story the user choose.
    */
   public String[] sprint1() throws IOException,
                                                        InterruptedException,
@@ -336,10 +336,11 @@ public final class Utils {
    *
    *<p>Metodo che sceglie la richiesta dello Sprint 2 da assolvere basandosi sui dati ottenuti da command-line.
    * 
-   * @throws IOException
-   * @throws InterruptedException
-   * @throws GeneralSecurityException
-   * @throws URISyntaxException
+   * @throws IOException  See stack trace for proper location.
+   * @throws InterruptedException  See stack trace for proper location.
+   * @throws GeneralSecurityException  See stack trace for proper location.
+   * @throws URISyntaxException  See stack trace for proper location.
+   * @return request  Contains which sprint and which user story the user choose.
    */
   public String[] sprint2() throws IOException,
                                                        InterruptedException,

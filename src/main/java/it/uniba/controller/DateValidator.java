@@ -22,8 +22,9 @@ public final class DateValidator {
    * 
    * <p>Metodo principale della classe. Assolve le responsabilità della classe
    * 
-   * @param dateToValidate Date to be validated
-   * @param dateFromat Format of the date to be validated
+   * @param yyyy year of the date to be validated
+   * @param mm month of the date to be validated
+   * @param dd month of the date to be validated
    * @return valid
    */
   public boolean isThisDateValid(final String yyyy, final String mm, final String dd) {
