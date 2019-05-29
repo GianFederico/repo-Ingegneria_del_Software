@@ -1,6 +1,6 @@
 package it.uniba.main;
 
-import it.uniba.sotorrent.Controller;
+import it.uniba.controller.MainControl;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -44,12 +44,11 @@ public final class AppMain {
       IOException,
       InterruptedException,
       GeneralSecurityException,
-      URISyntaxException {
+      URISyntaxException,
+      Exception {
 
     System.out.println("Current working dir: " + System.getProperty("user.dir"));
-    Controller ct = new Controller();
+    MainControl ct = new MainControl();
     ct.control(args);
-
-    System.exit(0);
   }
 }

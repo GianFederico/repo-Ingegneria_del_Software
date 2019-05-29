@@ -29,12 +29,12 @@ public interface IsoQuery {
  * @param yyyy Obtained from command-line, is the year used to filter the query results.
  * @param mm Obtained from command-line, is the month used to filter the query results.
  * @param dd Obtained from command-line, is the day used to filter the query results.
- * @param type Array containing the post type id used to filter the query results.
+ * @param ptid Array containing the post type id used to filter the query results.
  * @param limit Obtained from command-line, is the limit number for the shown results.
  * @return The job for the query.
  * @throws InterruptedException Raised on timeouts.
 */
-  Job runQuerySprint1(String yyyy, String mm, String dd, String[] type, String limit)
+  Job runQuerySprint1(String yyyy, String mm, String dd, String[] ptid, String limit)
       throws InterruptedException;
 
   /**
@@ -47,13 +47,13 @@ public interface IsoQuery {
  * 
  * @param yyyy Obtained from command-line, is the year used to filter the query results.
  * @param mm Obtained from command-line, is the month used to filter the query results.
- * @param type Array containing the post type id used to filter the query results.
+ * @param ptid Array containing the post type id used to filter the query results.
  * @param taglike Obtained from command-line, is the post tag used to filter the query results.
  * @param limit Obtained from command-line, is the limit number for the shown results.
  * @return The job for the query.
  * @throws InterruptedException Raised on timeouts.
 */
-  Job runQuerySprint1(String yyyy, String mm, String[] type, String taglike, String limit)
+  Job runQuerySprint1(String yyyy, String mm, String[] ptid, String taglike, String limit)
       throws InterruptedException;
 
 
