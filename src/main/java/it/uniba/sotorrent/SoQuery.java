@@ -40,6 +40,11 @@ public final class SoQuery implements IsoQuery {
   /**
  * URL of credentials JSON file.
  */
+
+  public BigQuery getBigQuery() {
+    return this.bigquery;
+  }
+
   private static final String URL = "http://neo.di.uniba.it/credentials/project-hopcroft-dfhf4t.json";
 
   /**
@@ -55,7 +60,7 @@ public final class SoQuery implements IsoQuery {
 
   @Override
 public Job runQuerySprint1(final String yyyy, final String mm, final String dd,
-      final String[] type, final String limit) throws InterruptedException {
+      final String[] ptid, final String limit) throws InterruptedException {
     // Use standard SQL syntax for queries.
     // See: https://cloud.google.com/bigquery/sql-reference/
 
@@ -65,22 +70,22 @@ public Job runQuerySprint1(final String yyyy, final String mm, final String dd,
          * filtrandoli in base ad anno, mese e giorno
  * ed ordinandoli in modo crescente.
  * 
- * Se type[0]=1 && type[1]=1, la query prendera'� i risultati solamente dai post classificati
+ * Se ptid[0]=1 && ptid[1]=1, la query prendera'� i risultati solamente dai post classificati
  * come domande perche' la seconda parte della query verra'� ignorata
  * in quanto post_type_id=1 e' incompatibile con
  * la fonte `bigquery-public-data.stackoverflow.posts_questions`.
  * 
- * Se type[0]=2 && type[1]=2, la query prenderà i risultati solamente dai post classificati
+ * Se ptid[0]=2 && ptid[1]=2, la query prenderà i risultati solamente dai post classificati
  * come risposte perchè la prima parte della query verrà ignorata
  * in quanto post_type_id=2 è incompatibile con
  * la fonte `bigquery-public-data.stackoverflow.posts_answers`.
  * 
- * Se type[0]=1 && type[1]=2, la query prenderà i risultati sia dalle domande che dalle risposte.
+ * Se ptid[0]=1 && ptid[1]=2, la query prenderà i risultati sia dalle domande che dalle risposte.
  */
         "(SELECT DISTINCT owner_user_id as User "
         + "FROM `bigquery-public-data.stackoverflow.posts_questions`"
         + "WHERE owner_user_id IS NOT null "
-        + "AND post_type_id=" + type[0]
+        + "AND post_type_id=" + ptid[0]
         + " AND extract(year from creation_date)=" + yyyy
         + " AND extract(month from creation_date)=" + mm
         + " AND extract(day from creation_date)=" + dd
@@ -91,7 +96,7 @@ public Job runQuerySprint1(final String yyyy, final String mm, final String dd,
         + "(SELECT DISTINCT owner_user_id as User "
         + "FROM `bigquery-public-data.stackoverflow.posts_answers`"
         + "WHERE owner_user_id IS NOT null "
-        + "AND post_type_id=" + type[1]
+        + "AND post_type_id=" + ptid[1]
         + " AND extract(year from creation_date)=" + yyyy
         + " AND extract(month from creation_date)=" + mm
         + " AND extract(day from creation_date)=" + dd
@@ -120,7 +125,7 @@ public Job runQuerySprint1(final String yyyy, final String mm, final String dd,
   }
 
   @Override
-  public Job runQuerySprint1(final String yyyy, final String mm, final String[] type,
+  public Job runQuerySprint1(final String yyyy, final String mm, final String[] ptid,
       final String taglike, final String limit) throws InterruptedException {
 
     QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(
@@ -129,17 +134,17 @@ public Job runQuerySprint1(final String yyyy, final String mm, final String dd,
  * filtrandoli in base ad anno, mese e tag
  * ed ordinandoli in modo crescente.
  * 
- * Se type[0]=1 && type[1]=1, la query prenderà i risultati solamente dai post classificati come
+ * Se ptid[0]=1 && ptid[1]=1, la query prenderà i risultati solamente dai post classificati come
  * domande perchè la seconda parte della query verrà ignorata
  * in quanto post_type_id=1 è incompatibile con
  * la fonte `bigquery-public-data.stackoverflow.posts_questions`.
  * 
- * Se type[0]=2 && type[1]=2, la query prenderà i risultati solamente dai post classificati come
+ * Se ptid[0]=2 && ptid[1]=2, la query prenderà i risultati solamente dai post classificati come
  * risposte perchè la prima parte della query verrà ignorata
  * in quanto post_type_id=2 è incompatibile con
  * la fonte `bigquery-public-data.stackoverflow.posts_answers`.
  * 
- * Se type[0]=1 && type[1]=2, la query prenderà i risultati sia dalle domande che dalle risposte.
+ * Se ptid[0]=1 && ptid[1]=2, la query prenderà i risultati sia dalle domande che dalle risposte.
  * 
  * Nello specifico la seconda parte della query dovrà far riferimento ad
  * entrambe le fonti di domande e risposte in quanto il tag è applicabile solo alle domande
@@ -148,7 +153,7 @@ public Job runQuerySprint1(final String yyyy, final String mm, final String dd,
          "(SELECT DISTINCT owner_user_id as User "
          + "FROM `bigquery-public-data.stackoverflow.posts_questions` "
          + "WHERE owner_user_id IS NOT null"
-         + " AND post_type_id=" + type[0]
+         + " AND post_type_id=" + ptid[0]
          + " AND extract(year from creation_date)=" + yyyy
          + " AND extract(month from creation_date)=" + mm
          + " AND Tags like '%" + taglike + "%'"
@@ -161,7 +166,7 @@ public Job runQuerySprint1(final String yyyy, final String mm, final String dd,
          + "INNER JOIN `bigquery-public-data.stackoverflow.posts_questions` as Domande "
          + "ON Domande.id = Risposte.parent_id "
          + "WHERE Risposte.owner_user_id IS NOT null "
-         + "AND Risposte.post_type_id=" + type[1]
+         + "AND Risposte.post_type_id=" + ptid[1]
          + " AND extract(year from Risposte.creation_date)=" + yyyy
          + " AND extract(month from Risposte.creation_date)=" + mm
          + " AND Domande.Tags LIKE '%" + taglike + "%' "

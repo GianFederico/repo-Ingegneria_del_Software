@@ -51,8 +51,7 @@ public final class MainControl {
                                             IOException,
                                             InterruptedException,
                                             GeneralSecurityException,
-                                            URISyntaxException,
-                                            Exception {
+                                            URISyntaxException {
     GoogleDocsUtils gdut = new GoogleDocsUtils();
     Utils ut = new Utils();
     final int numminargs = 3;
