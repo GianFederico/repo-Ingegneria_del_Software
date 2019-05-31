@@ -47,7 +47,7 @@ public final class MainControl {
  * @throws GeneralSecurityException  See stack trace for proper location.
  * @throws URISyntaxException  See stack trace for proper location.
  */
-  public void control(final String[] args) throws FileNotFoundException,
+  public boolean control(final String[] args) throws FileNotFoundException,
                                             IOException,
                                             InterruptedException,
                                             GeneralSecurityException,
@@ -58,6 +58,7 @@ public final class MainControl {
     boolean exit = false;
     String spid = "";
     String[] request;
+    boolean flag = false;
     /**
  * Sorting of the data obtained from command-line
  *
@@ -152,11 +153,10 @@ public final class MainControl {
          gdut.shareSheet(spid);
          gdut.getSheetByTitle(spid);
          //Writes the results contained in the 'res' list on the Google spreadsheet.
-         gdut.writeSheet(spid, res, ut.getQuery());
-      } else {
-        System.out.println("La tua richiesta non ha prodotto alcun risultato");
+         flag = gdut.writeSheet(spid, res, ut.getQuery());
       }
    }
+   return !(exit || !flag);
   }
 
 

@@ -46,8 +46,13 @@ public final class AppMain {
       GeneralSecurityException,
       URISyntaxException {
 
+    boolean flag = false;
+    String[] prova = {"yyyy=2016", "mm=02", "dd=11", "type=question", "limit=10"};
     System.out.println("Current working dir: " + System.getProperty("user.dir"));
     MainControl ct = new MainControl();
-    ct.control(args);
+    flag = ct.control(prova);
+    if (!flag) {
+      System.out.println("Errore! La tua richiesta non ha prodotto alcun risultato");
+    }
   }
 }
