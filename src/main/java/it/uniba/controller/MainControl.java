@@ -58,6 +58,7 @@ public final class MainControl {
     boolean exit = false;
     String spid = "";
     String[] request;
+    //boolean ok = true;
     /**
  * Sorting of the data obtained from command-line
  *
@@ -154,9 +155,11 @@ public final class MainControl {
          //Writes the results contained in the 'res' list on the Google spreadsheet.
          gdut.writeSheet(spid, res, ut.getQuery());
       } else {
+        //ok = false;
         System.out.println("La tua richiesta non ha prodotto alcun risultato");
       }
    }
+   //return ok;
   }
 
 

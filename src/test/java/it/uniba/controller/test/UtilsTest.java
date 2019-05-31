@@ -7,10 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.GeneralSecurityException;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +17,7 @@ import it.uniba.controller.Utils;
  * 
  *
  */
-public class UtilsTest {
+class UtilsTest {
   private static Utils ut = null;
 
   @BeforeAll
@@ -223,12 +219,16 @@ public class UtilsTest {
 
   @Test
   @DisplayName ("Test switching()")
-  public void switchingTest() throws IOException, InterruptedException, GeneralSecurityException, URISyntaxException {
+  public void switchingTest() {
     assumeNotNull(ut);
     String[] inputDProva = {"yyyy=2016", "mm=02", "dd=11", "type=question", "edge=yes",
-        "weight=no", "limit=100", "user=1109", "taglike=java"};
+        "weight=no", "limit=3", "user=1109", "taglike=java"};
     int i = 0;
-    assertFalse(ut.switching(inputDProva));
+    try {
+      assertFalse(ut.switching(inputDProva));
+    } catch (Exception e) {
+      System.err.println(e);
+    }
     assertEquals(inputDProva[i++].split("=")[1], ut.getYyyy());
     assertEquals(inputDProva[i++].split("=")[1], ut.getMm());
     assertEquals(inputDProva[i++].split("=")[1], ut.getDd());
@@ -243,8 +243,12 @@ public class UtilsTest {
 
   @Test
   @DisplayName ("Test sprint1()")
-  public void testSprint1() throws IOException, InterruptedException, GeneralSecurityException, URISyntaxException {
-    assertNotNull(ut.sprint1());
+  public void testSprint1() {
+    try {
+      assertNotNull(ut.sprint1());
+    } catch (Exception e) {
+      System.err.println(e);
+    }
 
     ut.setEdge(false);
     ut.setWeight(false);
@@ -252,70 +256,113 @@ public class UtilsTest {
 
     //assertEquals("1", ut.getQuery());
     ut.setTipo("question");
-    assertEquals("1", ut.sprint1()[0]);
-    assertEquals("1", ut.sprint1()[1]);
+    try {
+      assertEquals("1", ut.sprint1()[0]);
+      assertEquals("1", ut.sprint1()[1]);
+    } catch (Exception e) {
+      System.err.println(e);
+    }
     ut.setTipo("answer");
-    assertEquals("1", ut.sprint1()[0]);
-    assertEquals("2", ut.sprint1()[1]);
+    try {
+      assertEquals("1", ut.sprint1()[0]);
+      assertEquals("2", ut.sprint1()[1]);
+    } catch (Exception e) {
+      System.err.println(e);
+    }
     ut.setTipo("post");
-    assertEquals("1", ut.sprint1()[0]);
-    assertEquals("3", ut.sprint1()[1]);
+    try {
+      assertEquals("1", ut.sprint1()[0]);
+      assertEquals("3", ut.sprint1()[1]);
+    } catch (Exception e) {
+      System.err.println(e);
+    }
 
     ut.setTaglike("java");
 
     //assertEquals("2", ut.getQuery());
     ut.setTipo("question");
+    try {
     assertEquals("1", ut.sprint1()[0]);
     assertEquals("4", ut.sprint1()[1]);
+    } catch (Exception e) {
+      System.err.println(e);
+    }
     ut.setTipo("answer");
+    try {
     assertEquals("1", ut.sprint1()[0]);
     assertEquals("5", ut.sprint1()[1]);
+    } catch (Exception e) {
+      System.err.println(e);
+    }
     ut.setTipo("post");
+    try {
     assertEquals("1", ut.sprint1()[0]);
     assertEquals("6", ut.sprint1()[1]);
+    } catch (Exception e) {
+      System.err.println(e);
+    }
   }
 
   @Test
   @DisplayName ("Test sprint2()")
-  public void testSprint2() throws IOException, InterruptedException, GeneralSecurityException, URISyntaxException {
-    assertNotNull(ut.sprint2());
+  public void testSprint2() {
+    try {
+      assertNotNull(ut.sprint2());
+    } catch (Exception e) {
+      System.err.println(e);
+    }
 
     ut.setEdge(true);
     ut.setWeight(false);
 
     ut.setUser("");
     ut.setTipo("question");
-    //assertEquals("3", ut.getQuery());
+    try {
     assertEquals("2", ut.sprint2()[0]);
     assertEquals("1", ut.sprint2()[1]);
+    } catch (Exception e) {
+      System.err.println(e);
+    }
     ut.setUser("Prova");
-    //assertEquals("4", ut.getQuery());
+    try {
     assertEquals("2", ut.sprint2()[0]);
     assertEquals("2", ut.sprint2()[1]);
+    } catch (Exception e) {
+      System.err.println(e);
+    }
     ut.setTipo("answer");
-    //assertEquals("5", ut.getQuery());
+    try {
     assertEquals("2", ut.sprint2()[0]);
     assertEquals("3", ut.sprint2()[1]);
+    } catch (Exception e) {
+      System.err.println(e);
+    }
 
     ut.setWeight(true);
 
-    //assertEquals(" GROUP BY Risposte.owner_user_id, Domande.owner_user_id", ut.getGroupby());
-    //assertEquals(", COUNT (*) AS weight", ut.getColumn3());
     ut.setTipo("question");
     ut.setUser("");
-    //assertEquals("6", ut.getQuery());
+    try {
     assertEquals("2", ut.sprint2()[0]);
     assertEquals("4", ut.sprint2()[1]);
+    } catch (Exception e) {
+      System.err.println(e);
+    }
     ut.setUser("Prova");
-    //assertEquals("7", ut.getQuery());
+    try {
     assertEquals("2", ut.sprint2()[0]);
     assertEquals("5", ut.sprint2()[1]);
+    } catch (Exception e) {
+      System.err.println(e);
+    }
     ut.setTipo("answer");
-    //assertEquals("8", ut.getQuery());
+    try {
     assertEquals("2", ut.sprint2()[0]);
     assertEquals("6", ut.sprint2()[1]);
+    } catch (Exception e) {
+      System.err.println(e);
+    }
   }
 
 }
 
-  //public void test
