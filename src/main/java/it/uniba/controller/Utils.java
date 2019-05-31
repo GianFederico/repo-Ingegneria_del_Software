@@ -47,52 +47,105 @@ public final class Utils {
     return var;
   }
 
+  public void setPtid(final String[] var) {
+    this.ptid[0] = var[0];
+    this.ptid[1] = var[1];
+  }
+
   public boolean isEdge() {
     return edge;
+  }
+
+  public void setEdge(final boolean var) {
+    this.edge = var;
   }
 
   public boolean isWeight() {
     return weight;
   }
 
+  public void setWeight(final boolean var) {
+    this.weight = var;
+  }
+
   public String getGroupby() {
     return this.groupby;
+  }
+
+  public void setGroupby(final String var) {
+    this.groupby = var;
   }
 
   public String getColumn3() {
     return this.column3;
   }
 
+  public void setColumn3(final String var) {
+    this.column3 = var;
+  }
+
   public String getQuery() {
     return this.query;
+  }
+
+  public void setQuery(final String var) {
+    this.query = var;
   }
 
   public String getYyyy() {
     return this.yyyy;
   }
 
+  public void setYyyy(final String var) {
+    this.yyyy = var;
+  }
+
   public String getMm() {
     return this.mm;
+  }
+
+  public void setMm(final String var) {
+    this.mm = var;
   }
 
   public String getDd() {
     return this.dd;
   }
 
+  public void setDd(final String var) {
+    this.dd = var;
+  }
+
   public String getTipo() {
     return this.tipo;
+  }
+
+  public void setTipo(final String var) {
+    this.tipo = var;
   }
 
   public String getTaglike() {
     return this.taglike;
   }
 
+  public void setTaglike(final String var) {
+    this.taglike = var;
+  }
+
   public String getLimit() {
     return this.limit;
   }
 
+  public void setLimit(final String var) {
+    this.limit = var;
+  }
+
   public String getUser() {
     return this.user;
+  }
+
+  public void setUser(final String var) {
+    this.user = var;
   }
 
   /**
@@ -262,9 +315,9 @@ public final class Utils {
    * @return request  Contains which sprint and which user story the user choose.
    */
   public String[] sprint1() throws IOException,
-                                                       InterruptedException,
-                                                       GeneralSecurityException,
-                                                       URISyntaxException {
+                                   InterruptedException,
+                                   GeneralSecurityException,
+                                   URISyntaxException {
     String[] request = {"", ""};
     /**
      * Requests 1,2 and 3 of the Sprint 1
@@ -343,9 +396,9 @@ public final class Utils {
    * @return request  Contains which sprint and which user story the user choose.
    */
   public String[] sprint2() throws IOException,
-                                                       InterruptedException,
-                                                       GeneralSecurityException,
-                                                       URISyntaxException {
+                                   InterruptedException,
+                                   GeneralSecurityException,
+                                   URISyntaxException {
     String[] request = {"", ""};
     /**
      * Requests 1,2 and 3 of the Sprint 2

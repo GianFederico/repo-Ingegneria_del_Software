@@ -44,8 +44,7 @@ public final class AppMain {
       IOException,
       InterruptedException,
       GeneralSecurityException,
-      URISyntaxException,
-      Exception {
+      URISyntaxException {
 
     System.out.println("Current working dir: " + System.getProperty("user.dir"));
     MainControl ct = new MainControl();
