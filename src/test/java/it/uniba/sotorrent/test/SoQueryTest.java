@@ -35,6 +35,7 @@ class SoQueryTest {
   @Test
   @DisplayName ("Test runQuerySprint1 1 out of 2")
   public void test1RunQuerySprint1() {
+
     String yyyy = "2016";
     String mm = "11";
     String dd = "02";

@@ -2,18 +2,10 @@ package it.uniba.controller.test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-//import static org.junit.jupiter.api.Assertions.assertFalse;
-//import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.Assert.assertTrue;
-
-//import java.io.FileNotFoundException;
-//import java.io.IOException;
-//import java.net.URISyntaxException;
-//import java.security.GeneralSecurityException;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-//import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
@@ -58,4 +50,5 @@ class MainControlTest {
       System.err.println(e);
     }
   }
+
 }
