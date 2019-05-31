@@ -183,11 +183,11 @@ public class GoogleDocsUtils {
    * @param res list of the results, with as many column as the resultant table from the query.
    * @throws IOException Generic I/O error.
    */
-  public void writeSheet(final String spid, final List<Long[]> res, final String query) throws IOException {
+  public boolean writeSheet(final String spid, final List<Long[]> res, final String query) throws IOException {
     List<CellData> values = new ArrayList<>();
     String[] colonne = {"", "to", "weight"};
     int rowIndex = 0;
-
+    boolean flag = false;
     /**
      * Assegnazione titoli alle colonne del Google spreadsheet in base al valore di query.
      */
@@ -235,6 +235,7 @@ public class GoogleDocsUtils {
             writeRequest(values, spid, rowIndex);
             rowIndex++;
           }
+          flag = true;
           break;
         case "3": case "4": case "5":
           for (int i = 0; i < res.size(); i++) {
@@ -249,6 +250,7 @@ public class GoogleDocsUtils {
             writeRequest(values, spid, rowIndex);
             rowIndex++;
           }
+          flag = true;
           break;
         case "6": case "7": case "8":
           for (int i = 0; i < res.size(); i++) {
@@ -266,11 +268,13 @@ public class GoogleDocsUtils {
             writeRequest(values, spid, rowIndex);
             rowIndex++;
           }
+          flag = true;
           break;
         default:
           break;
       }
     }
+    return flag;
   }
 
   /**

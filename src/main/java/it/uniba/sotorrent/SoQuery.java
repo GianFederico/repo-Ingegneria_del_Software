@@ -41,10 +41,6 @@ public final class SoQuery implements IsoQuery {
  * URL of credentials JSON file.
  */
 
-  /**
-   * 
-   * @return bigquery
-   */
   public BigQuery getBigQuery() {
     return this.bigquery;
   }
