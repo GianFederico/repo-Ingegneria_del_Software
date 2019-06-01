@@ -93,7 +93,7 @@ import it.uniba.sotorrent.SoQuery;
       String order = "Dom";
       String where = "Risposte";
       String nnull = "Domande";
-      String query = "6";
+      String query = "8";
       String groupby = " GROUP BY Risposte.owner_user_id, Domande.owner_user_id";
       String column3 = ", COUNT (*) AS weight";
       assertTrue(gdut.writeSheet(spid, soq.getResults(
