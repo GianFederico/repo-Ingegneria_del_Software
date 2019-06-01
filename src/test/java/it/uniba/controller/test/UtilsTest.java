@@ -10,13 +10,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import it.uniba.controller.Utils;
 /**
- * 
+ * Casi di test per Utils.java
  *
  */
+@Tag ("Utils")
 class UtilsTest {
   private static Utils ut = null;
 
@@ -254,7 +256,6 @@ class UtilsTest {
     ut.setWeight(false);
     ut.setTaglike("");
 
-    //assertEquals("1", ut.getQuery());
     ut.setTipo("question");
     try {
       assertEquals("1", ut.sprint1()[0]);
@@ -279,7 +280,6 @@ class UtilsTest {
 
     ut.setTaglike("java");
 
-    //assertEquals("2", ut.getQuery());
     ut.setTipo("question");
     try {
     assertEquals("1", ut.sprint1()[0]);

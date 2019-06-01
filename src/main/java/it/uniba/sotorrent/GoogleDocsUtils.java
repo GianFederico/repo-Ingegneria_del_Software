@@ -182,6 +182,7 @@ public class GoogleDocsUtils {
    * @param query Index used to identify which query has been used.
    * @param res list of the results, with as many column as the resultant table from the query.
    * @throws IOException Generic I/O error.
+   * @return flag. True if the writing was successful, false otherwise.
    */
   public boolean writeSheet(final String spid, final List<Long[]> res, final String query) throws IOException {
     List<CellData> values = new ArrayList<>();
