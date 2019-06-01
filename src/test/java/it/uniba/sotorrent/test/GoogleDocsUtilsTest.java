@@ -88,12 +88,12 @@ import it.uniba.sotorrent.SoQuery;
     try {
       String spid = gdut.createSheet("Prova");
       SoQuery soq = new SoQuery();
-      String user = "2016";
+      String user = "86";
       String limit = "1";
       String order = "Dom";
       String where = "Risposte";
       String nnull = "Domande";
-      String query = "8";
+      String query = "6";
       String groupby = " GROUP BY Risposte.owner_user_id, Domande.owner_user_id";
       String column3 = ", COUNT (*) AS weight";
       assertTrue(gdut.writeSheet(spid, soq.getResults(

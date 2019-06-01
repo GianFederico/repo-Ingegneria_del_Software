@@ -78,7 +78,7 @@ public final class MainControl {
           + " - yyyy=____  mm=__  type=(question(s), answer(s) or post(s))  taglike=____ "
           + " limit=___ \n - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s))"
           + " edge=(yes or no)  limit=___ \n"
-          + " - type=(question(s), answer(s) or post(s))  user=___  edge=(yes or no)  limit=___ \n"
+          + " - type=(question(s), answer(s) or post(s))  user=___  edge=(yes or no) weight=(yes or no) limit=___ \n"
           + " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s))"
           + " edge=(yes or no)  weight=(yes or no)  limit=___");
       exit = true;
@@ -99,11 +99,10 @@ public final class MainControl {
       request = ut.sprint1();
       //end Sprint 1
 
-      if (request[0].equals("") && request[1].equals("")) {
       //start Sprint 2
       request = ut.sprint2();
       //end Sprint 2
-      }
+
 
       IsoQuery soq = new SoQuery();
       Job job = null;
