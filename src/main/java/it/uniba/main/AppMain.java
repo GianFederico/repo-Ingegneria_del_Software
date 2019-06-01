@@ -47,10 +47,9 @@ public final class AppMain {
       URISyntaxException {
 
     boolean flag = false;
-    String[] prova = {"yyyy=2016", "mm=02", "dd=11", "type=question", "limit=10"};
     System.out.println("Current working dir: " + System.getProperty("user.dir"));
     MainControl ct = new MainControl();
-    flag = ct.control(prova);
+    flag = ct.control(args);
     if (!flag) {
       System.out.println("Errore! La tua richiesta non ha prodotto alcun risultato");
     }

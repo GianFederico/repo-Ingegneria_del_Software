@@ -273,7 +273,7 @@ public final class Utils {
               + " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s)) "
               + "edge=(yes or no)  limit=___ \n"
               + " - type=(question(s), answer(s) or post(s))  user=___  edge=(yes or no)  "
-              + "limit=___ \n"
+              + "weight=(yes or no) limit=___ \n"
               + " - yyyy=____  mm=__  dd=__  type=(question(s), answer(s) or post(s))  "
               + "edge=(yes or no)  weight=(yes or no)  limit=___");
           exit = true;
