@@ -294,10 +294,12 @@ public final class Utils {
        exit = true;
      }
     } else {
-      if (Integer.parseInt(this.yyyy) == soyear && Integer.parseInt(this.mm)
-          < soLaunch.get(Calendar.MONTH)) {
-        System.out.println("Data fuori dal range");
-        exit = true;
+      if (!yyyy.equals("") && !mm.equals("")) {
+        if (Integer.parseInt(this.yyyy) == soyear && Integer.parseInt(this.mm)
+            < soLaunch.get(Calendar.MONTH)) {
+          System.out.println("Data fuori dal range");
+          exit = true;
+        }
       }
     }
     return exit;
