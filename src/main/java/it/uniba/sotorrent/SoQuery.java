@@ -37,14 +37,14 @@ public final class SoQuery implements IsoQuery {
  * Instance of BigQuery service.
  */
   private BigQuery bigquery;
-  /**
- * URL of credentials JSON file.
- */
 
   public BigQuery getBigQuery() {
     return this.bigquery;
   }
 
+  /**
+   * URL of credentials JSON file.
+   */
   private static final String URL = "http://neo.di.uniba.it/credentials/project-hopcroft-dfhf4t.json";
 
   /**
@@ -307,6 +307,7 @@ public Job runQuerySprint1(final String yyyy, final String mm, final String dd,
    * @return Results as a list of arrays.
    * @throws JobException Generic error occurred.
    * @throws InterruptedException Raised on timeouts.
+   * @return results List filled with query results.
    */
   public List<Long[]> getResults(final Job queryJob, final String query)
       throws JobException, InterruptedException {

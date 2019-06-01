@@ -115,6 +115,7 @@ public interface IsoQuery {
  * @return Results as a list of arrays.
  * @throws JobException Generic error occurred.
  * @throws InterruptedException Raised on timeouts.
+ * @return The list filled with query results.
  */
   List<Long[]> getResults(Job job, String query) throws JobException, InterruptedException;
 

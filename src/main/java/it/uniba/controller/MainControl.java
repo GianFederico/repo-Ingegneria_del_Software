@@ -46,6 +46,7 @@ public final class MainControl {
  * @throws InterruptedException  See stack trace for proper location.
  * @throws GeneralSecurityException  See stack trace for proper location.
  * @throws URISyntaxException  See stack trace for proper location.
+ * @return true if everything went fine, false otherwise.
  */
   public boolean control(final String[] args) throws FileNotFoundException,
                                             IOException,
@@ -54,7 +55,7 @@ public final class MainControl {
                                             URISyntaxException {
     GoogleDocsUtils gdut = new GoogleDocsUtils();
     Utils ut = new Utils();
-    final int numminargs = 3;
+    final int numminargs = 4;
     boolean exit = false;
     String spid = "";
     String[] request;
@@ -64,7 +65,7 @@ public final class MainControl {
  *
  * Smistamento dei dati ottenuti da command-line
  */
-    if (args.length > numminargs) {
+    if (args.length >= numminargs) {
       exit = ut.switching(args);
     } else {
       /**
