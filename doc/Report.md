@@ -38,7 +38,7 @@ utilizzando il software Docker che mette a disposizione un container come macchi
 
 
 
-![](doc/drawings/modello_1.png)
+![](drawings/modello_1.png)
 
 
 
@@ -74,15 +74,15 @@ utilizzando il software Docker che mette a disposizione un container come macchi
 Abbiamo deciso di utilizzare lo stile architetturale N(4)-Tier . Questo stile, indica un’architettura software le cui funzionalità sono logicamente separate, ovvero suddivise su più strati o livelli differenti, in comunicazione tra di loro. Ciascuno strato è in comunicazione diretta con quelli adiacenti, ovvero richiede e offre servizi e/o dati ai livelli con cui è a contatto.
 
 
-![](doc/drawings/stile_architetturale.jpg)
+![](drawings/stile_architetturale.jpg)
 
 ### Diagramma dei package:
 
 
 
-![](doc/drawings/package.png)
+![](drawings/package.png)
 ### Diagramma dei componenti:
-![](doc/drawings/componenti.png)
+![](drawings/componenti.png)
 
 
 
@@ -94,10 +94,10 @@ Abbiamo deciso di utilizzare lo stile architetturale N(4)-Tier . Questo stile, i
 - Diagramma delle classi:
 
 
-![](doc/drawings/modello_1.png)
+![](drawings/modello_1.png)
 
 - Diagramma di sequenza:
-![](doc/drawings/dds_query1sprint1.PNG)
+![](drawings/dds_query1sprint1.PNG)
 
 
 
@@ -106,13 +106,13 @@ Abbiamo deciso di utilizzare lo stile architetturale N(4)-Tier . Questo stile, i
 - Diagramma delle classi:
 
 
-![](doc/drawings/modello_2.png)
+![](drawings/modello_2.png)
 
 
 
 
 - Diagramma di sequenza:
-![](doc/drawings/dds_query2sprint2.PNG)
+![](drawings/dds_query2sprint2.PNG)
 
 
 Per lo sviluppo del progetto abbiamo seguito i principi dell'OO design tra i quali, i principi SOLID, DRY. 
@@ -122,15 +122,15 @@ Per lo sviluppo del progetto abbiamo seguito i principi dell'OO design tra i qua
 
 - ### Tabella riassuntiva di JaCoCo:
 
-![](doc/drawings/JaCoCo.png)
+![](drawings/JaCoCo.png)
 
 - ### Casi di test di JUnit:
 
-![](doc/drawings/testreport.png)
+![](drawings/testreport.png)
 
 - ### Report di FindBugs:
 
-![](doc/drawings/FindBugsReport.png)
+![](drawings/FindBugsReport.png)
 
 
 # Manuale Utente
