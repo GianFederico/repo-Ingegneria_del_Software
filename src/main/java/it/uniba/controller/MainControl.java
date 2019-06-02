@@ -98,11 +98,11 @@ public final class MainControl {
       //start Sprint 1
       request = ut.sprint1();
       //end Sprint 1
-
-      //start Sprint 2
-      request = ut.sprint2();
-      //end Sprint 2
-
+      if (request[0].equals("") && request[1].equals("")) {
+        //start Sprint 2
+        request = ut.sprint2();
+        //end Sprint 2
+      }
 
       IsoQuery soq = new SoQuery();
       Job job = null;
