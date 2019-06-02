@@ -98,11 +98,11 @@ public final class MainControl {
       //start Sprint 1
 <span class="fc" id="L99">      request = ut.sprint1();</span>
       //end Sprint 1
-
-      //start Sprint 2
-<span class="fc" id="L103">      request = ut.sprint2();</span>
-      //end Sprint 2
-
+<span class="pc bpc" id="L101" title="1 of 4 branches missed.">      if (request[0].equals(&quot;&quot;) &amp;&amp; request[1].equals(&quot;&quot;)) {</span>
+        //start Sprint 2
+<span class="fc" id="L103">        request = ut.sprint2();</span>
+        //end Sprint 2
+      }
 
 <span class="fc" id="L107">      IsoQuery soq = new SoQuery();</span>
 <span class="fc" id="L108">      Job job = null;</span>
