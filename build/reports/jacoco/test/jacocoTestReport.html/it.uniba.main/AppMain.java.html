@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AppMain.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sna4so</a> &gt; <a href="index.source.html" class="el_package">it.uniba.main</a> &gt; <span class="el_source">AppMain.java</span></div><h1>AppMain.java</h1><pre class="source lang-java linenums">package it.uniba.main;
+
+import it.uniba.controller.MainControl;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.GeneralSecurityException;
+
+/**
+ * 'BOUNDARY'
+ * 
+ *&lt;p&gt;Main class of the project.
+ * It obtains data from command-line and
+ * passes them to the control class.
+ * 
+ *&lt;p&gt;La classe principale del progetto.
+ * Acquisisce i dati da command-line e
+ * li passa alla classe di controllo
+ * 
+ *&lt;b&gt;DO NOT RENAME&lt;/b&gt;
+ */
+
+public final class AppMain {
+
+  /**
+   * Private constructor. Change if needed.
+   */
+  private AppMain() {
+
+  }
+
+  /**
+   *  This is the main entry of the application.
+   *
+   * @param args The command-line arguments.
+   * @throws FileNotFoundException See stack trace for proper location.
+   * @throws IOException  See stack trace for proper location.
+   * @throws InterruptedException  See stack trace for proper location.
+   * @throws GeneralSecurityException  See stack trace for proper location.
+   * @throws URISyntaxException  See stack trace for proper location.
+   */
+  public static void main(final String[] args) throws FileNotFoundException,
+      IOException,
+      InterruptedException,
+      GeneralSecurityException,
+      URISyntaxException {
+
+<span class="nc" id="L49">    boolean flag = false;</span>
+<span class="nc" id="L50">    System.out.println(&quot;Current working dir: &quot; + System.getProperty(&quot;user.dir&quot;));</span>
+<span class="nc" id="L51">    MainControl ct = new MainControl();</span>
+<span class="nc" id="L52">    flag = ct.control(args);</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">    if (!flag) {</span>
+<span class="nc" id="L54">      System.out.println(&quot;Errore! La tua richiesta non ha prodotto alcun risultato&quot;);</span>
+    }
+<span class="nc" id="L56">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.0.201801022044</span></div></body></html>

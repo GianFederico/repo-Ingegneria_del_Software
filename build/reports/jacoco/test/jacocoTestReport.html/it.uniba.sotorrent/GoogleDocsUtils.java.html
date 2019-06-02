@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GoogleDocsUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sna4so</a> &gt; <a href="index.source.html" class="el_package">it.uniba.sotorrent</a> &gt; <span class="el_source">GoogleDocsUtils.java</span></div><h1>GoogleDocsUtils.java</h1><pre class="source lang-java linenums">package it.uniba.sotorrent;
+
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.batch.BatchRequest;
+import com.google.api.client.googleapis.batch.json.JsonBatchCallback;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.googleapis.json.GoogleJsonError;
+import com.google.api.client.http.HttpHeaders;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.Permission;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.SheetsScopes;
+import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetRequest;
+import com.google.api.services.sheets.v4.model.CellData;
+import com.google.api.services.sheets.v4.model.ExtendedValue;
+import com.google.api.services.sheets.v4.model.GridCoordinate;
+import com.google.api.services.sheets.v4.model.Request;
+import com.google.api.services.sheets.v4.model.RowData;
+import com.google.api.services.sheets.v4.model.Spreadsheet;
+import com.google.api.services.sheets.v4.model.SpreadsheetProperties;
+import com.google.api.services.sheets.v4.model.UpdateCellsRequest;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * 'ENTITY'
+ * 
+ *&lt;p&gt;Utility class for creating, sharing, and deleting Google spreadsheets.
+ * 
+ *&lt;p&gt;Classe di utility per la creazione, condivisione ed eliminazione dei Google spreadsheets.
+ * 
+ *&lt;p&gt;For more, refer to &lt;a href = &quot;https://developers.google.com/sheets/api/samples/&quot;&gt;this documentation&lt;/a&gt;.
+ */
+public class GoogleDocsUtils {
+  /**
+ * The app name.
+ */
+  private static final String APPLICATION_NAME = &quot;sna4so&quot;;
+  /**
+ * Permissions to manage Google Drive.
+ */
+<span class="fc" id="L50">  private static final List&lt;String&gt; SCOPES = Arrays.asList(SheetsScopes.DRIVE);</span>
+  /**
+ * The instance of the Google Spreadsheet service.
+ */
+  private Sheets sheetsService;
+  /**
+ * The instance of the Google Drive service.
+ */
+  private Drive driveService;
+  /**
+ * The object built from the JSON credential file.
+ */
+  private Credential credential;
+  /**
+ * The location where the SON credential file is stored on the Internet.
+ */
+  private static final String URL = &quot;http://neo.di.uniba.it/credentials/project-hopcroft-dfhf4t.json&quot;;
+
+  /**
+* Default constructor, authenticates and instantiate services.
+*/
+<span class="fc" id="L71">  public GoogleDocsUtils() {</span>
+    try {
+<span class="fc" id="L73">      credential = authorize();</span>
+<span class="fc" id="L74">      sheetsService = getSheetsService();</span>
+<span class="fc" id="L75">      driveService = getDriveService();</span>
+<span class="nc" id="L76">    } catch (Exception e) {</span>
+<span class="nc" id="L77">      System.err.println(e);</span>
+<span class="fc" id="L78">    }</span>
+<span class="fc" id="L79">  }</span>
+
+  /**
+ * Performs Google authentication process.
+ * @return Credential object.
+ * @throws IOException Generic I/O error
+ * @throws GeneralSecurityException Failed authentication.
+ * @throws URISyntaxException Malformed URI.
+ */
+  private Credential authorize() throws IOException, GeneralSecurityException, URISyntaxException {
+<span class="fc" id="L89">    GoogleCredential authCred = GoogleCredential.fromStream(new URL(URL).openStream()).toBuilder()</span>
+<span class="fc" id="L90">        .setServiceAccountScopes(SCOPES).build();</span>
+<span class="fc" id="L91">    return authCred;</span>
+  }
+
+  /**
+ * Instantiates the the Google Sheets service.
+ * @return Instance of the Google Sheets service.
+ * @throws IOException Generic I/O error.
+ * @throws GeneralSecurityException Failed authentication.
+ * @throws URISyntaxException Malformed URI.
+ */
+  private Sheets getSheetsService() throws IOException, GeneralSecurityException,
+      URISyntaxException {
+<span class="fc" id="L103">    return new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(),</span>
+<span class="fc" id="L104">        JacksonFactory.getDefaultInstance(), credential)</span>
+<span class="fc" id="L105">        .setApplicationName(APPLICATION_NAME).build();</span>
+  }
+
+  /**
+   * Instantiates the Google Drive service.
+   * @return Instance of the Google Drive service.
+   * @throws IOException Generic I/O error.
+   * @throws GeneralSecurityException Failed authentication.
+   * @throws URISyntaxException Malformed URI.
+   */
+  private Drive getDriveService() throws IOException, GeneralSecurityException, URISyntaxException {
+<span class="fc" id="L116">    return new Drive.Builder(GoogleNetHttpTransport.newTrustedTransport(),</span>
+<span class="fc" id="L117">        JacksonFactory.getDefaultInstance(), credential)</span>
+<span class="fc" id="L118">        .setApplicationName(APPLICATION_NAME).build();</span>
+  }
+
+  /**
+   * Creates a new sheet on every execution.
+   * @param title Spreadsheet title.
+   * @return The spreadsheet id.
+   * @throws IOException Generic I/O error.
+   */
+  public String createSheet(final String title) throws IOException {
+<span class="fc" id="L128">    Spreadsheet spreadsheet = new Spreadsheet().setProperties(new SpreadsheetProperties()</span>
+<span class="fc" id="L129">          .setTitle(title));</span>
+<span class="fc" id="L130">    spreadsheet = sheetsService.spreadsheets().create(spreadsheet).setFields(&quot;spreadsheetId&quot;)</span>
+<span class="fc" id="L131">        .execute();</span>
+<span class="fc" id="L132">    String spid = spreadsheet.getSpreadsheetId();</span>
+<span class="fc" id="L133">    System.out.println(&quot;Spreadsheet ID: &quot; + spid);</span>
+<span class="fc" id="L134">    System.out.println(&quot;Spreadhsheet URL: https://docs.google.com/spreadsheets/d/&quot; + spid);</span>
+<span class="fc" id="L135">    return spid;</span>
+  }
+
+  /**
+   * Returns the spreadsheet id by title.
+   * @param spid The spreadsheet id.
+   * @throws IOException Generic I/O error.
+   */
+  public void getSheetByTitle(final String spid) throws IOException {
+<span class="fc" id="L144">    Sheets.Spreadsheets.Get request = sheetsService.spreadsheets().get(spid);</span>
+<span class="fc" id="L145">    Spreadsheet response = request.execute();</span>
+<span class="fc" id="L146">    System.out.println(response);</span>
+<span class="fc" id="L147">  }</span>
+
+
+  /**
+   * Instantiates the write requests for the Google spreadsheet.
+   * 
+   *&lt;p&gt;Istanzia le richieste di scrittura per il Google spreadsheet.
+   * 
+   * @param values Values that have to be written.
+   * @param spid Google spreadsheet id.
+   * @param rowIndex  Index of the row in which write.
+   * @throws IOException Generic I/O error.
+   */
+  public void writeRequest(final List&lt;CellData&gt; values, final String spid, final int rowIndex)
+      throws IOException  {
+<span class="fc" id="L162">    List&lt;Request&gt; requests = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L164">    requests.add(new Request().setUpdateCells(</span>
+<span class="fc" id="L165">        new UpdateCellsRequest().setStart(new GridCoordinate().setSheetId(0).setRowIndex(rowIndex)</span>
+<span class="fc" id="L166">            .setColumnIndex(0))</span>
+<span class="fc" id="L167">        .setRows(Arrays.asList(new RowData().setValues(values)))</span>
+<span class="fc" id="L168">        .setFields(&quot;userEnteredValue,userEnteredFormat.backgroundColor&quot;)));</span>
+<span class="fc" id="L169">    BatchUpdateSpreadsheetRequest batchUpdateRequest =</span>
+<span class="fc" id="L170">        new BatchUpdateSpreadsheetRequest().setRequests(requests);</span>
+<span class="fc" id="L171">    sheetsService.spreadsheets().batchUpdate(spid, batchUpdateRequest).execute();</span>
+<span class="fc" id="L172">  }</span>
+
+
+  /**
+   * Write results to the spreadsheet relying on the query used to obtain them.
+   * 
+   *&lt;p&gt;Scrive i risultati sullo spreadsheet in base a quale query è stata utilizzata per ottenerli.
+   * 
+   *&lt;p&gt;Also, see &lt;a href = &quot;https://developers.google.com/sheets/api/guides/values&quot;&gt;here&lt;/a&gt;.
+   * @param spid The spreadsheet id.
+   * @param query Index used to identify which query has been used.
+   * @param res list of the results, with as many column as the resultant table from the query.
+   * @throws IOException Generic I/O error.
+   * @return flag. True if the writing was successful, false otherwise.
+   */
+  public boolean writeSheet(final String spid, final List&lt;Long[]&gt; res, final String query) throws IOException {
+<span class="fc" id="L188">    List&lt;CellData&gt; values = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L189">    String[] colonne = {&quot;&quot;, &quot;to&quot;, &quot;weight&quot;};</span>
+<span class="fc" id="L190">    int rowIndex = 0;</span>
+<span class="fc" id="L191">    boolean flag = false;</span>
+    /**
+     * Assegnazione titoli alle colonne del Google spreadsheet in base al valore di query.
+     */
+<span class="pc bpc" id="L195" title="2 of 4 branches missed.">    switch (query) {</span>
+      case &quot;1&quot;: case &quot;2&quot;:
+<span class="fc" id="L197">        colonne[0] = &quot;owner_user_id&quot;;</span>
+<span class="fc" id="L198">        values.add(new CellData().setUserEnteredValue(new ExtendedValue()</span>
+<span class="fc" id="L199">            .setStringValue(colonne[0])));</span>
+<span class="fc" id="L200">        break;</span>
+      case &quot;3&quot;: case &quot;4&quot;: case &quot;5&quot;:
+<span class="fc" id="L202">        colonne[0] = &quot;from&quot;;</span>
+<span class="fc" id="L203">        values.add(new CellData().setUserEnteredValue(new ExtendedValue()</span>
+<span class="fc" id="L204">            .setStringValue(colonne[0])));</span>
+<span class="fc" id="L205">        values.add(new CellData().setUserEnteredValue(new ExtendedValue()</span>
+<span class="fc" id="L206">            .setStringValue(colonne[1])));</span>
+<span class="fc" id="L207">        break;</span>
+      case &quot;6&quot;: case &quot;7&quot;: case &quot;8&quot;:
+<span class="nc" id="L209">        colonne[0] = &quot;from&quot;;</span>
+<span class="nc" id="L210">        values.add(new CellData().setUserEnteredValue(new ExtendedValue()</span>
+<span class="nc" id="L211">            .setStringValue(colonne[0])));</span>
+<span class="nc" id="L212">        values.add(new CellData().setUserEnteredValue(new ExtendedValue()</span>
+<span class="nc" id="L213">            .setStringValue(colonne[1])));</span>
+<span class="nc" id="L214">        values.add(new CellData().setUserEnteredValue(new ExtendedValue()</span>
+<span class="nc" id="L215">            .setStringValue(colonne[2])));</span>
+<span class="nc" id="L216">        break;</span>
+      default:
+        break;
+    }
+<span class="fc" id="L220">    writeRequest(values, spid, rowIndex);</span>
+
+<span class="pc bpc" id="L222" title="1 of 2 branches missed.">    if (null !=  res) {</span>
+<span class="fc" id="L223">      rowIndex = 1;</span>
+      /**
+         * Assegnazione dei valori ottenuti dalla query ad ogni riga del Google spreadsheet
+         * in base al valore di query.
+         */
+<span class="pc bpc" id="L228" title="2 of 4 branches missed.">      switch (query) {</span>
+        case &quot;1&quot;: case &quot;2&quot;:
+<span class="fc bfc" id="L230" title="All 2 branches covered.">          for (int i = 0; i &lt; res.size(); i++) {</span>
+<span class="fc" id="L231">            values = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L232">            Long[] userID = res.get(i);</span>
+<span class="fc" id="L233">            values.add(</span>
+<span class="fc" id="L234">                new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(</span>
+<span class="fc" id="L235">                    String.valueOf(userID[0]))));</span>
+<span class="fc" id="L236">            writeRequest(values, spid, rowIndex);</span>
+<span class="fc" id="L237">            rowIndex++;</span>
+          }
+<span class="fc" id="L239">          flag = true;</span>
+<span class="fc" id="L240">          break;</span>
+        case &quot;3&quot;: case &quot;4&quot;: case &quot;5&quot;:
+<span class="fc bfc" id="L242" title="All 2 branches covered.">          for (int i = 0; i &lt; res.size(); i++) {</span>
+<span class="fc" id="L243">            values = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L244">            Long[] valori = res.get(i);</span>
+<span class="fc" id="L245">            values.add(</span>
+<span class="fc" id="L246">                new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(</span>
+<span class="fc" id="L247">                    String.valueOf(valori[0]))));</span>
+<span class="fc" id="L248">            values.add(</span>
+<span class="fc" id="L249">                new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(</span>
+<span class="fc" id="L250">                    String.valueOf(valori[1]))));</span>
+<span class="fc" id="L251">            writeRequest(values, spid, rowIndex);</span>
+<span class="fc" id="L252">            rowIndex++;</span>
+          }
+<span class="fc" id="L254">          flag = true;</span>
+<span class="fc" id="L255">          break;</span>
+        case &quot;6&quot;: case &quot;7&quot;: case &quot;8&quot;:
+<span class="nc bnc" id="L257" title="All 2 branches missed.">          for (int i = 0; i &lt; res.size(); i++) {</span>
+<span class="nc" id="L258">            values = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L259">            Long[] valori = res.get(i);</span>
+<span class="nc" id="L260">            values.add(</span>
+<span class="nc" id="L261">                new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(</span>
+<span class="nc" id="L262">                    String.valueOf(valori[0]))));</span>
+<span class="nc" id="L263">            values.add(</span>
+<span class="nc" id="L264">                new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(</span>
+<span class="nc" id="L265">                    String.valueOf(valori[1]))));</span>
+<span class="nc" id="L266">            values.add(</span>
+<span class="nc" id="L267">                new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(</span>
+<span class="nc" id="L268">                    String.valueOf(valori[2]))));</span>
+<span class="nc" id="L269">            writeRequest(values, spid, rowIndex);</span>
+<span class="nc" id="L270">            rowIndex++;</span>
+          }
+<span class="nc" id="L272">          flag = true;</span>
+<span class="nc" id="L273">          break;</span>
+        default:
+          break;
+      }
+    }
+<span class="fc" id="L278">    return flag;</span>
+  }
+
+  /**
+   * Makes the spreadsheet readable to anyone with the link.
+   * @param spid The spreadsheet id.
+   * @throws IOException Generic I/O error.
+   * @throws GeneralSecurityException Failed authentication.
+   * @throws URISyntaxException Malformed URI.
+   */
+  public void shareSheet(final String spid) throws IOException, GeneralSecurityException,
+      URISyntaxException {
+<span class="fc" id="L290">    JsonBatchCallback&lt;Permission&gt; callback = new JsonBatchCallback&lt;Permission&gt;() {</span>
+      public void onFailure(final GoogleJsonError e, final HttpHeaders responseHeaders)
+          throws IOException {
+        // Handle error
+<span class="nc" id="L294">        System.err.println(e.getMessage());</span>
+<span class="nc" id="L295">      }</span>
+
+      public void onSuccess(final Permission permission, final HttpHeaders responseHeaders)
+          throws IOException {
+<span class="fc" id="L299">        System.out.println(&quot;Permission ID: &quot; + permission.getId());</span>
+<span class="fc" id="L300">      }</span>
+    };
+<span class="fc" id="L302">    BatchRequest batch = driveService.batch();</span>
+<span class="fc" id="L303">    Permission userPermission = new Permission().setType(&quot;anyone&quot;).setRole(&quot;reader&quot;);</span>
+<span class="fc" id="L304">    driveService.permissions().create(spid, userPermission).setFields(&quot;id&quot;).queue(batch, callback);</span>
+<span class="fc" id="L305">    batch.execute();</span>
+<span class="fc" id="L306">  }</span>
+
+  // Intentionally not used it. Use it to delete a sheet.
+  /**
+   * Deletes a spreadsheet.
+   * @param spid The spreadsheet id.
+   * @throws IOException Generic I/O error.
+   */
+  @SuppressWarnings(&quot;unused&quot;)
+  private void deleteSheet(final String spid) throws IOException {
+<span class="nc" id="L316">    driveService.files().delete(spid).execute();</span>
+<span class="nc" id="L317">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.0.201801022044</span></div></body></html>

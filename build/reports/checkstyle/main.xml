@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.8">
+<file name="C:\Users\gianl\Desktop\sna4so\progetto1819-hopcroft\src\main\java\it\uniba\controller\DateValidator.java">
+</file>
+<file name="C:\Users\gianl\Desktop\sna4so\progetto1819-hopcroft\src\main\java\it\uniba\controller\MainControl.java">
+</file>
+<file name="C:\Users\gianl\Desktop\sna4so\progetto1819-hopcroft\src\main\java\it\uniba\controller\Utils.java">
+</file>
+<file name="C:\Users\gianl\Desktop\sna4so\progetto1819-hopcroft\src\main\java\it\uniba\main\AppMain.java">
+</file>
+<file name="C:\Users\gianl\Desktop\sna4so\progetto1819-hopcroft\src\main\java\it\uniba\sotorrent\GoogleDocsUtils.java">
+</file>
+<file name="C:\Users\gianl\Desktop\sna4so\progetto1819-hopcroft\src\main\java\it\uniba\sotorrent\IsoQuery.java">
+</file>
+<file name="C:\Users\gianl\Desktop\sna4so\progetto1819-hopcroft\src\main\java\it\uniba\sotorrent\SoQuery.java">
+</file>
+</checkstyle>

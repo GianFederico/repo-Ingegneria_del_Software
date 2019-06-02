@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SoQuery.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sna4so</a> &gt; <a href="index.source.html" class="el_package">it.uniba.sotorrent</a> &gt; <span class="el_source">SoQuery.java</span></div><h1>SoQuery.java</h1><pre class="source lang-java linenums">package it.uniba.sotorrent;
+
+import com.google.auth.oauth2.ServiceAccountCredentials;
+import com.google.cloud.bigquery.BigQuery;
+import com.google.cloud.bigquery.BigQueryOptions;
+import com.google.cloud.bigquery.FieldValueList;
+import com.google.cloud.bigquery.Job;
+import com.google.cloud.bigquery.JobException;
+import com.google.cloud.bigquery.JobId;
+import com.google.cloud.bigquery.JobInfo;
+import com.google.cloud.bigquery.QueryJobConfiguration;
+import com.google.cloud.bigquery.TableResult;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+
+
+/**
+  * 'ENTITY'
+  * 
+  * &lt;p&gt;Class which defines functions that set and run queries, using Google BigQuery service.
+  * Is also defined the function able to fill a list with query results.
+  * 
+  * &lt;p&gt;Classe che definisce le funzioni in grado di impostare le query,
+  * interfacciandosi con il servizio BigQuery di Google.
+  * Inoltre e' definita la funzione in grado di riempire la lista coi risultati delle query.
+  * 
+  */
+
+public final class SoQuery implements IsoQuery {
+  /**
+ * Instance of BigQuery service.
+ */
+  private BigQuery bigquery;
+
+  public BigQuery getBigQuery() {
+<span class="fc" id="L42">    return this.bigquery;</span>
+  }
+
+  /**
+   * URL of credentials JSON file.
+   */
+  private static final String URL = &quot;http://neo.di.uniba.it/credentials/project-hopcroft-dfhf4t.json&quot;;
+
+  /**
+ * Default constructor, instantiates BigQuery API service.
+ * @throws FileNotFoundException The remote JSON file with credential is 404.
+ * @throws IOException Malformed JSON file.
+ */
+<span class="fc" id="L55">  public SoQuery() throws FileNotFoundException, IOException {</span>
+<span class="fc" id="L56">    bigquery = BigQueryOptions.newBuilder().setProjectId(&quot;sna4so-238509&quot;)</span>
+<span class="fc" id="L57">.setCredentials(ServiceAccountCredentials.fromStream(new URL(URL).openStream())).build()</span>
+<span class="fc" id="L58">.getService();</span>
+<span class="fc" id="L59">  }</span>
+
+  @Override
+public Job runQuerySprint1(final String yyyy, final String mm, final String dd,
+      final String[] ptid, final String limit) throws InterruptedException {
+    // Use standard SQL syntax for queries.
+    // See: https://cloud.google.com/bigquery/sql-reference/
+
+<span class="fc" id="L67">    QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(</span>
+        /**
+         * La query seleziona univoci e non nulli user id dai dati di Stack Overflow
+         * filtrandoli in base ad anno, mese e giorno
+ * ed ordinandoli in modo crescente.
+ * 
+ * Se ptid[0]=1 &amp;&amp; ptid[1]=1, la query prendera'  i risultati solamente dai post classificati
+ * come domande perche' la seconda parte della query verra'  ignorata
+ * in quanto post_type_id=1 e' incompatibile con
+ * la fonte `bigquery-public-data.stackoverflow.posts_questions`.
+ * 
+ * Se ptid[0]=2 &amp;&amp; ptid[1]=2, la query prenderÃ  i risultati solamente dai post classificati
+ * come risposte perchÃ¨ la prima parte della query verrÃ  ignorata
+ * in quanto post_type_id=2 Ã¨ incompatibile con
+ * la fonte `bigquery-public-data.stackoverflow.posts_answers`.
+ * 
+ * Se ptid[0]=1 &amp;&amp; ptid[1]=2, la query prenderÃ  i risultati sia dalle domande che dalle risposte.
+ */
+        &quot;(SELECT DISTINCT owner_user_id as User &quot;
+        + &quot;FROM `bigquery-public-data.stackoverflow.posts_questions`&quot;
+        + &quot;WHERE owner_user_id IS NOT null &quot;
+        + &quot;AND post_type_id=&quot; + ptid[0]
+        + &quot; AND extract(year from creation_date)=&quot; + yyyy
+        + &quot; AND extract(month from creation_date)=&quot; + mm
+        + &quot; AND extract(day from creation_date)=&quot; + dd
+        + &quot; ORDER BY User)&quot;
+
+        + &quot; UNION DISTINCT&quot;
+
+        + &quot;(SELECT DISTINCT owner_user_id as User &quot;
+        + &quot;FROM `bigquery-public-data.stackoverflow.posts_answers`&quot;
+        + &quot;WHERE owner_user_id IS NOT null &quot;
+        + &quot;AND post_type_id=&quot; + ptid[1]
+        + &quot; AND extract(year from creation_date)=&quot; + yyyy
+        + &quot; AND extract(month from creation_date)=&quot; + mm
+        + &quot; AND extract(day from creation_date)=&quot; + dd
+        + &quot; ORDER BY User)&quot;
+        + &quot; ORDER BY User &quot;
+        + &quot;LIMIT &quot; + limit)
+
+<span class="fc" id="L107">        .setUseLegacySql(false).build();</span>
+
+    // Create a job ID so that we can safely retry.
+<span class="fc" id="L110">    JobId jobId = JobId.of(UUID.randomUUID().toString());</span>
+<span class="fc" id="L111">    Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build());</span>
+
+    // Wait for the query to complete.
+<span class="fc" id="L114">    queryJob = queryJob.waitFor();</span>
+
+    // Check for errors
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">    if (queryJob == null) {</span>
+<span class="nc" id="L118">      throw new RuntimeException(&quot;Job no longer exists&quot;);</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">    } else if (queryJob.getStatus().getError() != null) {</span>
+      // You can also look at queryJob.getStatus().getExecutionErrors() for all
+      // errors, not just the latest one.
+<span class="nc" id="L122">      throw new RuntimeException(queryJob.getStatus().getError().toString());</span>
+    }
+<span class="fc" id="L124">    return queryJob;</span>
+  }
+
+  @Override
+  public Job runQuerySprint1(final String yyyy, final String mm, final String[] ptid,
+      final String taglike, final String limit) throws InterruptedException {
+
+<span class="fc" id="L131">    QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(</span>
+         /**
+ * La query seleziona univoci e non nulli user id dai dati di Stack Overflow
+ * filtrandoli in base ad anno, mese e tag
+ * ed ordinandoli in modo crescente.
+ * 
+ * Se ptid[0]=1 &amp;&amp; ptid[1]=1, la query prenderÃ  i risultati solamente dai post classificati come
+ * domande perchÃ¨ la seconda parte della query verrÃ  ignorata
+ * in quanto post_type_id=1 Ã¨ incompatibile con
+ * la fonte `bigquery-public-data.stackoverflow.posts_questions`.
+ * 
+ * Se ptid[0]=2 &amp;&amp; ptid[1]=2, la query prenderÃ  i risultati solamente dai post classificati come
+ * risposte perchÃ¨ la prima parte della query verrÃ  ignorata
+ * in quanto post_type_id=2 Ã¨ incompatibile con
+ * la fonte `bigquery-public-data.stackoverflow.posts_answers`.
+ * 
+ * Se ptid[0]=1 &amp;&amp; ptid[1]=2, la query prenderÃ  i risultati sia dalle domande che dalle risposte.
+ * 
+ * Nello specifico la seconda parte della query dovrÃ  far riferimento ad
+ * entrambe le fonti di domande e risposte in quanto il tag Ã¨ applicabile solo alle domande
+ * e dunque verranno visualizzate tutte le risposte alle domande contenenti il determinato tag.
+ */
+         &quot;(SELECT DISTINCT owner_user_id as User &quot;
+         + &quot;FROM `bigquery-public-data.stackoverflow.posts_questions` &quot;
+         + &quot;WHERE owner_user_id IS NOT null&quot;
+         + &quot; AND post_type_id=&quot; + ptid[0]
+         + &quot; AND extract(year from creation_date)=&quot; + yyyy
+         + &quot; AND extract(month from creation_date)=&quot; + mm
+         + &quot; AND Tags like '%&quot; + taglike + &quot;%'&quot;
+         + &quot; ORDER BY owner_user_id ASC)&quot;
+
+         + &quot; UNION DISTINCT &quot;
+
+         + &quot;( SELECT DISTINCT Risposte.owner_user_id as User &quot;
+         + &quot;FROM `bigquery-public-data.stackoverflow.posts_answers` as Risposte &quot;
+         + &quot;INNER JOIN `bigquery-public-data.stackoverflow.posts_questions` as Domande &quot;
+         + &quot;ON Domande.id = Risposte.parent_id &quot;
+         + &quot;WHERE Risposte.owner_user_id IS NOT null &quot;
+         + &quot;AND Risposte.post_type_id=&quot; + ptid[1]
+         + &quot; AND extract(year from Risposte.creation_date)=&quot; + yyyy
+         + &quot; AND extract(month from Risposte.creation_date)=&quot; + mm
+         + &quot; AND Domande.Tags LIKE '%&quot; + taglike + &quot;%' &quot;
+         + &quot;ORDER BY Risposte.owner_user_id ASC)&quot;
+         + &quot; ORDER BY User &quot;
+         + &quot;LIMIT &quot; + limit)
+
+<span class="fc" id="L177">         .setUseLegacySql(false).build();</span>
+
+    // Create a job ID so that we can safely retry.
+<span class="fc" id="L180">    JobId jobId = JobId.of(UUID.randomUUID().toString());</span>
+<span class="fc" id="L181">    Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build());</span>
+
+    // Wait for the query to complete.
+<span class="fc" id="L184">    queryJob = queryJob.waitFor();</span>
+
+    // Check for errors
+<span class="pc bpc" id="L187" title="1 of 2 branches missed.">    if (queryJob == null) {</span>
+<span class="nc" id="L188">      throw new RuntimeException(&quot;Job no longer exists&quot;);</span>
+<span class="pc bpc" id="L189" title="1 of 2 branches missed.">    } else if (queryJob.getStatus().getError() != null) {</span>
+      // You can also look at queryJob.getStatus().getExecutionErrors() for all
+      // errors, not just the latest one.
+<span class="nc" id="L192">      throw new RuntimeException(queryJob.getStatus().getError().toString());</span>
+    }
+<span class="fc" id="L194">    return queryJob;</span>
+  }
+
+  @Override
+  public Job runQuerySprint2(final String yyyy, final String mm, final String dd,
+      final String limit, final String groupby, final String column3)
+          throws InterruptedException {
+
+<span class="fc" id="L202">    QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(</span>
+        /**
+         * La query seleziona coppie non nulle di user id relativi agli utenti
+         * che hanno creato un post di domanda e chi vi ha risposto
+         * I dati sono estrapolati da quelli di Stack Overflow e filtrati
+         * in base ad anno, mese e giorno
+         * ed ordinati in modo crescente.
+         * 
+         * Nel caso della quarta richiesta dello Sprint 2 verra' 
+         * visualizzato anche il numero di risposte che un utente ha dato al domandante.
+         */
+        &quot;SELECT Risposte.owner_user_id as Ris, Domande.owner_user_id as Dom&quot;  + column3
+        + &quot; FROM `bigquery-public-data.stackoverflow.posts_questions` as Domande &quot;
+        + &quot;INNER JOIN `bigquery-public-data.stackoverflow.posts_answers` &quot;
+        + &quot;as Risposte ON Domande.id = Risposte.parent_id &quot;
+        + &quot;WHERE Risposte.owner_user_id is NOT NULL &quot;
+        + &quot;AND Domande.owner_user_id is NOT NULL &quot;
+        + &quot; AND extract(year from Domande.creation_date)=&quot; + yyyy
+        + &quot; AND extract(month from Domande.creation_date)=&quot; + mm
+        + &quot; AND extract(day from Domande.creation_date)=&quot; + dd
+        + groupby
+        + &quot; ORDER BY Ris, Dom&quot;
+        + &quot; LIMIT &quot; + limit)
+
+<span class="fc" id="L226">        .setUseLegacySql(false).build();</span>
+
+    // Create a job ID so that we can safely retry.
+<span class="fc" id="L229">    JobId jobId = JobId.of(UUID.randomUUID().toString());</span>
+<span class="fc" id="L230">    Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build());</span>
+
+    // Wait for the query to complete.
+<span class="fc" id="L233">    queryJob = queryJob.waitFor();</span>
+
+    // Check for errors
+<span class="pc bpc" id="L236" title="1 of 2 branches missed.">    if (queryJob == null) {</span>
+<span class="nc" id="L237">      throw new RuntimeException(&quot;Job no longer exists&quot;);</span>
+<span class="pc bpc" id="L238" title="1 of 2 branches missed.">    } else if (queryJob.getStatus().getError() != null) {</span>
+      // You can also look at queryJob.getStatus().getExecutionErrors() for all
+      // errors, not just the latest one.
+<span class="nc" id="L241">      throw new RuntimeException(queryJob.getStatus().getError().toString());</span>
+    }
+<span class="fc" id="L243">    return queryJob;</span>
+  }
+
+  @Override
+  public Job runQuerySprint2(final String user, final String limit,
+      final String order, final String where, final String nnull, final String groupby,
+      final String column3) throws InterruptedException {
+<span class="fc" id="L250">    QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(</span>
+        /**
+         * La query seleziona coppie non nulle di user id relativi agli utenti che
+         * hanno creato un post di domanda e chi vi ha risposto.
+         * I dati sono estrapolati da quelli di Stack Overflow,
+         * filtrati sulla base di uno specifico utente ed ordinati in modo crescente.
+         * 
+         * Nel caso della seconda e quinta richiesta dello Sprint 2
+         * l'utente specifico verra'  selezionato tra i domandanti e
+         * verranno visualizzati tutti coloro che hanno risposto ai suoi post.
+         * 
+         * Nel caso della terza e sesta richiesta dello Sprint 2
+         * l'utente specifico verra'  selezionato tra coloro che hanno risposto e
+         * verranno visualizzati tutti coloro ai quali questo utente
+         * ha risposto ad almeno una domanda.
+         * 
+         * In aggiunta, nel caso della quinta e sesta richiesta verra'
+         * visualizzato anche il numero di risposte che un utente ha dato al domandante.
+         */
+        &quot;SELECT distinct Risposte.owner_user_id as Ris, Domande.owner_user_id as Dom &quot; + column3
+        + &quot; FROM `bigquery-public-data.stackoverflow.posts_questions`&quot;
+        + &quot; as Domande &quot;
+        + &quot;INNER JOIN `bigquery-public-data.stackoverflow.posts_answers`&quot;
+        + &quot; as Risposte ON Domande.id = Risposte.parent_id &quot;
+        + &quot;WHERE &quot; + where + &quot;.owner_user_id = &quot; + user
+        + &quot; AND &quot; + nnull + &quot;.owner_user_id is NOT NULL &quot;
+        + groupby
+        + &quot; ORDER BY &quot; + order
+        + &quot; LIMIT &quot; + limit)
+
+<span class="fc" id="L280">        .setUseLegacySql(false).build();</span>
+
+    // Create a job ID so that we can safely retry.
+<span class="fc" id="L283">    JobId jobId = JobId.of(UUID.randomUUID().toString());</span>
+<span class="fc" id="L284">    Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build());</span>
+
+    // Wait for the query to complete.
+<span class="fc" id="L287">    queryJob = queryJob.waitFor();</span>
+
+    // Check for errors
+<span class="pc bpc" id="L290" title="1 of 2 branches missed.">    if (queryJob == null) {</span>
+<span class="nc" id="L291">      throw new RuntimeException(&quot;Job no longer exists&quot;);</span>
+<span class="pc bpc" id="L292" title="1 of 2 branches missed.">    } else if (queryJob.getStatus().getError() != null) {</span>
+      // You can also look at queryJob.getStatus().getExecutionErrors() for all
+      // errors, not just the latest one.
+<span class="nc" id="L295">      throw new RuntimeException(queryJob.getStatus().getError().toString());</span>
+    }
+<span class="fc" id="L297">    return queryJob;</span>
+  }
+
+  /**
+   * Returns the results from the query job.
+   * 
+   * &lt;p&gt;Restituisce i valori dei risultati ottenuti tramite la query.
+   * 
+   * @param queryJob The job associated to the query.
+   * @param query Index used to identify which query has been used.
+   * @return Results as a list of arrays.
+   * @throws JobException Generic error occurred.
+   * @throws InterruptedException Raised on timeouts.
+   * @return results List filled with query results.
+   */
+  public List&lt;Long[]&gt; getResults(final Job queryJob, final String query)
+      throws JobException, InterruptedException {
+
+<span class="fc" id="L315">    List&lt;Long[]&gt; results = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L316" title="1 of 2 branches missed.">    if (queryJob != null) {</span>
+<span class="fc" id="L317">      int d = 0;</span>
+<span class="fc" id="L318">      TableResult result = queryJob.getQueryResults();</span>
+<span class="pc bpc" id="L319" title="1 of 4 branches missed.">      switch (query) {</span>
+
+        case &quot;1&quot;: case &quot;2&quot;:
+
+<span class="fc bfc" id="L323" title="All 2 branches covered.">          for (FieldValueList row : result.getValues()) {</span>
+<span class="fc" id="L324">            d++;</span>
+<span class="fc" id="L325">            Long[] userID = {row.get(&quot;User&quot;).getLongValue()};</span>
+<span class="fc" id="L326">            System.out.println(&quot;#&quot; + d + &quot; User: &quot; + userID[0]);</span>
+<span class="fc" id="L327">            results.add(userID);</span>
+<span class="fc" id="L328">          }</span>
+<span class="fc" id="L329">          break;</span>
+
+        case &quot;3&quot;: case &quot;4&quot;: case &quot;5&quot;:
+<span class="fc bfc" id="L332" title="All 2 branches covered.">          for (FieldValueList row : result.getValues()) {</span>
+
+<span class="fc" id="L334">            d++;</span>
+<span class="fc" id="L335">            Long[] valori = {row.get(&quot;Ris&quot;).getLongValue(), row.get(&quot;Dom&quot;).getLongValue()};</span>
+<span class="fc" id="L336">            System.out.println(&quot;#&quot; + d + &quot; from:&quot; + valori[0] + &quot; to:&quot; + valori[1]);</span>
+<span class="fc" id="L337">            results.add(valori);</span>
+<span class="fc" id="L338">          }</span>
+<span class="fc" id="L339">          break;</span>
+
+        case &quot;6&quot;: case &quot;7&quot;: case &quot;8&quot;:
+
+<span class="fc bfc" id="L343" title="All 2 branches covered.">          for (FieldValueList row : result.getValues()) {</span>
+<span class="fc" id="L344">            d++;</span>
+<span class="fc" id="L345">            Long[] valori = {row.get(&quot;Ris&quot;).getLongValue(), row.get(&quot;Dom&quot;).getLongValue(),</span>
+<span class="fc" id="L346">                  row.get(&quot;weight&quot;).getLongValue()};</span>
+<span class="fc" id="L347">            System.out.println(&quot;#&quot; + d + &quot; from:&quot; + valori[0] + &quot; to:&quot; + valori[1]</span>
+                  + &quot; weight:&quot; + valori[2]);
+<span class="fc" id="L349">            results.add(valori);</span>
+<span class="fc" id="L350">          }</span>
+<span class="fc" id="L351">          break;</span>
+        default:
+          break;
+      }
+    }
+
+<span class="fc" id="L357">    return results;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.0.201801022044</span></div></body></html>
